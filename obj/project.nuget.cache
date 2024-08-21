@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "b1XXIalwqO0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mesha\\Desktop\\Mesharsky_Pluginy\\Mesharsky_TeamBalance\\Mesharsky_TeamBalance.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mesha\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Mesha\\.nuget\\packages\\tomlyn\\0.17.0\\tomlyn.0.17.0.nupkg.sha512"
+  ],
+  "logs": []
+}

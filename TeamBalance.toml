@@ -1,0 +1,15 @@
+# Team Balance Plugin Configuration
+# Make sure to adjust these settings according to your server's needs.
+
+[PluginSettings]
+# The minimum number of players required on the server before the team balance
+# feature activates. This prevents balancing when there are too few players.
+# Default: 4
+minimum_players = 4
+
+# The maximum allowed ratio of scores between teams before triggering a balance.
+# For example, if set to 1.6, the balance will trigger if one team's score is
+# 60% higher than the other team's score. Adjust this value based on how strict
+# you want the balancing to be.
+# Default: 1.6
+score_balance_ratio = 1.6

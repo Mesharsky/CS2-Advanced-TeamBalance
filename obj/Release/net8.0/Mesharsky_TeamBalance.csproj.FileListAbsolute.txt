@@ -1,0 +1,14 @@
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\Mesharsky_TeamBalance.deps.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\Mesharsky_TeamBalance.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\Mesharsky_TeamBalance.pdb
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\CounterStrikeSharp.API.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.csproj.AssemblyReference.cache
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.AssemblyInfoInputs.cache
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.AssemblyInfo.cs
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.csproj.CoreCompileInputs.cache
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsk.BD9F03FD.Up2Date
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\refint\Mesharsky_TeamBalance.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.pdb
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\ref\Mesharsky_TeamBalance.dll
