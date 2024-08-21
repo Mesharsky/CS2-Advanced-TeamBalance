@@ -12,3 +12,4 @@ C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.
 C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\refint\Mesharsky_TeamBalance.dll
 C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.pdb
 C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\ref\Mesharsky_TeamBalance.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\obj\Release\net8.0\Mesharsky_TeamBalance.sourcelink.json

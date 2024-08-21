@@ -16,7 +16,6 @@ public partial class Mesharsky_TeamBalance
         Event_PlayerDisconnect();
     }
 
-    
     [GameEventHandler]
     public HookResult OnRoundPreStart(EventRoundPrestart @event, GameEventInfo info)
     {
@@ -29,7 +28,7 @@ public partial class Mesharsky_TeamBalance
     {
         if (BalanceHasBeenMade)
         {
-            Server.PrintToChatAll($" {ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
+            Server.PrintToChatAll($"{ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
             PrintDebugMessage("Teams have been balanced.");
         }
         return HookResult.Continue;
@@ -39,14 +38,11 @@ public partial class Mesharsky_TeamBalance
     {
         RegisterListener<Listeners.OnClientPutInServer>((slot) =>
         {
-            AddTimer(3.0f, () =>
+            var player = Utilities.GetPlayerFromSlot(slot);
+            if (player != null && player.IsValid && !player.IsBot)
             {
-                var player = Utilities.GetPlayerFromSlot(slot);
-                if (player == null || !player.IsValid || player.IsBot)
-                    return;
-
                 ProcessUserInformation(player);
-            });
+            }
         });
     }
 
@@ -77,7 +73,8 @@ public partial class Mesharsky_TeamBalance
         {
             PlayerName = player.PlayerName,
             PlayerSteamID = steamId,
-            Team = player.TeamNum
+            Team = (int)player.Team,
+            Score = player.Score
         };
 
         playerCache.AddOrUpdate(steamId, cachedPlayer, (key, oldPlayer) => cachedPlayer);

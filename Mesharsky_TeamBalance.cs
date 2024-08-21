@@ -18,4 +18,3 @@ public partial class Mesharsky_TeamBalance : BasePlugin
         AddCommandListener("jointeam", Command_JoinTeam);
     }
 }
-

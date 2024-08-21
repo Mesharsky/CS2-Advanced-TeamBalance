@@ -7,26 +7,11 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    private static int GetTeamPlayerCount(CsTeam team)
-    {
-        return Utilities.GetPlayers().Count(p => p.Team == team);
-    }
-
     public static int GetTeamScore(CsTeam team)
     {
-      var teamManagers = Utilities.FindAllEntitiesByDesignerName<CCSTeam>("cs_team_manager");
-
-      foreach (var teamManager in teamManagers)
-      {
-        if ((int)team == teamManager.TeamNum)
-        {
-          return teamManager.Score;
-        }
-      }
-
-      return 0;
+        var allPlayers = Utilities.GetPlayers();
+        return allPlayers.Where(p => p.Team == team).Sum(p => p.Score);
     }
-
 
     private static void PrintDebugMessage(string message)
     {
@@ -42,7 +27,7 @@ public partial class Mesharsky_TeamBalance
             return false;
         }
 
-        if (player.TeamNum == (int)newTeam)
+        if (player.Team == newTeam)
         {
             PrintDebugMessage($"Player {player.PlayerName} is already in team {newTeam}. No switch needed.");
             return true;
@@ -72,7 +57,6 @@ public partial class Mesharsky_TeamBalance
 
         return true;
     }
-
 
     private HookResult Command_JoinTeam(CCSPlayerController? player, CommandInfo info)
     {
@@ -109,16 +93,14 @@ public partial class Mesharsky_TeamBalance
     {
         PrintDebugMessage("Updating player teams in cache...");
 
-        var allPlayers = Utilities.GetPlayers();
+        var allPlayers = Utilities.GetPlayers()
+            .Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected);
 
         foreach (var player in allPlayers)
         {
-            if (player == null || !player.IsValid || player.IsBot)
-                continue;
-
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
             {
-                cachedPlayer.Team = player.TeamNum;
+                cachedPlayer.Team = (int)player.Team;
                 PrintDebugMessage($"Updated {cachedPlayer.PlayerName} in cache to team {cachedPlayer.Team}");
             }
             else
@@ -127,7 +109,7 @@ public partial class Mesharsky_TeamBalance
                 {
                     PlayerName = player.PlayerName,
                     PlayerSteamID = player.SteamID,
-                    Team = player.TeamNum,
+                    Team = (int)player.Team,
                     Score = player.Score
                 };
 
