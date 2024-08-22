@@ -1,0 +1,6 @@
+# Ignore bin and obj folders and their contents
+bin/
+obj/
+
+# Ignore specific file
+CounterStrikeSharp.API.dll
