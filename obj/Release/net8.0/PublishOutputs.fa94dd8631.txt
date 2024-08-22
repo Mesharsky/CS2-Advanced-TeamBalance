@@ -1,6 +1,0 @@
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\Mesharsky_TeamBalance.dll
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\Mesharsky_TeamBalance.deps.json
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\Mesharsky_TeamBalance.pdb
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\Newtonsoft.Json.dll
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\Tomlyn.dll
-C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_TeamBalance\bin\Release\net8.0\publish\CounterStrikeSharp.API.dll
