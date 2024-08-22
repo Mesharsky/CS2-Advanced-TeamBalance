@@ -7,12 +7,6 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    public static int GetTeamScore(CsTeam team)
-    {
-        var allPlayers = Utilities.GetPlayers();
-        return allPlayers.Where(p => p.Team == team).Sum(p => p.Score);
-    }
-
     private static void PrintDebugMessage(string message)
     {
         Console.WriteLine($"[Team Balance] {message}");

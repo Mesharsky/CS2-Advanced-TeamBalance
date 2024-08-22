@@ -33,9 +33,10 @@ public partial class Mesharsky_TeamBalance
     {
         var players = playerCache.Values
             .Where(p => p.Team == (int)CsTeam.CounterTerrorist || p.Team == (int)CsTeam.Terrorist)
-            .OrderBy(x => Guid.NewGuid())
-            .OrderByDescending(p => p.Score)
+            .OrderByDescending(p => Config?.PluginSettings.UsePerformanceScore == true ? p.PerformanceScore : p.Score)
             .ToList();
+
+        players.Shuffle();
 
         PrintDebugMessage($"Total valid players for rebalance: {players.Count}");
         return players;
@@ -51,13 +52,13 @@ public partial class Mesharsky_TeamBalance
         List<Player> ctTeam = new List<Player>();
         List<Player> tTeam = new List<Player>();
 
-        int ctTotalScore = 0;
-        int tTotalScore = 0;
+        float ctTotalScore = 0f;
+        float tTotalScore = 0f;
 
         bool balanceMade = false;
 
         PrintDebugMessage($"RebalancePlayers: totalPlayers={totalPlayers}, maxPerTeam={maxPerTeam}");
-        
+
         foreach (var player in players)
         {
             bool ctValidChoice = (tTeam.Count >= maxPerTeam || ctTotalScore <= tTotalScore) && ctTeam.Count < maxPerTeam;
@@ -67,18 +68,18 @@ public partial class Mesharsky_TeamBalance
             {
                 PrintDebugMessage($"Move {player.PlayerName} to CT (ctTotal={ctTotalScore}, ctCount={ctTeam.Count + 1})");
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
-
+                Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Blue}Counter-Terrorists{ChatColors.Default} aby wyrównać drużyny.");
                 ctTeam.Add(player);
-                ctTotalScore += player.Score;
+                ctTotalScore += player.PerformanceScore;
                 balanceMade = true;
             }
             else if (tValidChoice && player.Team != (int)CsTeam.Terrorist)
             {
                 PrintDebugMessage($"Move {player.PlayerName} to T (tTotal={tTotalScore}, tCount={tTeam.Count + 1})");
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
-                Server.PrintToChatAll($"{ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Red}Terrorists{ChatColors.Default} aby wyrównać drużyny.");
+                Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Red}Terrorists{ChatColors.Default} aby wyrównać drużyny.");
                 tTeam.Add(player);
-                tTotalScore += player.Score;
+                tTotalScore += player.PerformanceScore;
                 balanceMade = true;
             }
             else
@@ -86,12 +87,12 @@ public partial class Mesharsky_TeamBalance
                 if (player.Team == (int)CsTeam.CounterTerrorist)
                 {
                     ctTeam.Add(player);
-                    ctTotalScore += player.Score;
+                    ctTotalScore += player.PerformanceScore;
                 }
                 else if (player.Team == (int)CsTeam.Terrorist)
                 {
                     tTeam.Add(player);
-                    tTotalScore += player.Score;
+                    tTotalScore += player.PerformanceScore;
                 }
             }
         }
@@ -129,7 +130,7 @@ public partial class Mesharsky_TeamBalance
             return true;
         }
 
-        if (Math.Abs(ctPlayerCount - tPlayerCount) > 1)
+        if (Math.Abs(ctPlayerCount - tPlayerCount) > Config?.PluginSettings.MaxTeamSizeDifference)
         {
             PrintDebugMessage("Team sizes are not equal. Balance needed.");
             return true;

@@ -17,18 +17,15 @@ public partial class Mesharsky_TeamBalance
     }
 
     [GameEventHandler]
-    public HookResult OnRoundPreStart(EventRoundPrestart @event, GameEventInfo info)
-    {
-        AttemptBalanceTeams();
-        return HookResult.Continue;
-    }
-
-    [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        UpdatePlayerStatsInCache();
+
+        AttemptBalanceTeams();
+
         if (BalanceHasBeenMade)
         {
-            Server.PrintToChatAll($"{ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
+            Server.PrintToChatAll($" {ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
             PrintDebugMessage("Teams have been balanced.");
         }
         return HookResult.Continue;
@@ -38,11 +35,14 @@ public partial class Mesharsky_TeamBalance
     {
         RegisterListener<Listeners.OnClientPutInServer>((slot) =>
         {
-            var player = Utilities.GetPlayerFromSlot(slot);
-            if (player != null && player.IsValid && !player.IsBot)
+            AddTimer(3.0f, () =>
             {
+                var player = Utilities.GetPlayerFromSlot(slot);
+                if (player == null || !player.IsValid || player.IsBot)
+                    return;
+
                 ProcessUserInformation(player);
-            }
+            });
         });
     }
 
@@ -73,11 +73,49 @@ public partial class Mesharsky_TeamBalance
         {
             PlayerName = player.PlayerName,
             PlayerSteamID = steamId,
-            Team = (int)player.Team,
-            Score = player.Score
+            Team = player.TeamNum,
+            Kills = 0,
+            Deaths = 0,
+            Damage = 0,
+            Score = 0,
         };
 
         playerCache.AddOrUpdate(steamId, cachedPlayer, (key, oldPlayer) => cachedPlayer);
         PrintDebugMessage($"Player {player.PlayerName} with SteamID {steamId} added to cache.");
+    }
+
+    private static void UpdatePlayerStatsInCache()
+    {
+        PrintDebugMessage("Updating player stats in cache...");
+
+        var allPlayers = Utilities.GetPlayers();
+
+        foreach (var player in allPlayers.Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected))
+        {
+            if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
+            {
+                cachedPlayer.Kills = player.ActionTrackingServices!.MatchStats.Kills;
+                cachedPlayer.Deaths = player.ActionTrackingServices.MatchStats.Deaths;
+                cachedPlayer.Damage = player.ActionTrackingServices.MatchStats.Damage;
+                cachedPlayer.Score = player.Score;
+                PrintDebugMessage($"Updated {cachedPlayer.PlayerName} stats in cache.");
+            }
+            else
+            {
+                var newPlayer = new Player
+                {
+                    PlayerName = player.PlayerName,
+                    PlayerSteamID = player.SteamID,
+                    Team = player.TeamNum,
+                    Kills = player.ActionTrackingServices!.MatchStats.Kills,
+                    Deaths = player.ActionTrackingServices.MatchStats.Deaths,
+                    Damage = player.ActionTrackingServices.MatchStats.Damage,
+                    Score = player.Score,
+                };
+
+                playerCache.TryAdd(player.SteamID, newPlayer);
+                PrintDebugMessage($"Added {newPlayer.PlayerName} to cache with stats.");
+            }
+        }
     }
 }

@@ -1,3 +1,6 @@
+# Plugin Author - Mesharsky
+# https://csowicze.pl/
+
 # Team Balance Plugin Configuration
 # Make sure to adjust these settings according to your server's needs.
 
@@ -13,3 +16,11 @@ minimum_players = 4
 # you want the balancing to be.
 # Default: 1.6
 score_balance_ratio = 1.6
+
+# Whether to use PerformanceScore for balancing.
+# Default: true
+use_performance_score = true
+
+# Maximum allowed difference in team sizes.
+# Default: 1
+max_team_size_difference = 1
