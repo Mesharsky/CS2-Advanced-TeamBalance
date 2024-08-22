@@ -13,7 +13,7 @@ public partial class Mesharsky_TeamBalance
         public int Damage { get; set; }
 
         // KDA Ratio: (Kills + Assists) / Deaths
-        public float KDA => Deaths == 0 ? Kills : (float)(Kills) / Deaths;
+        public float KDA => Deaths == 0 ? Kills : (float)Kills / Deaths;
 
         // Performance score based on KDA, Damage, and Score
         public float PerformanceScore => KDA * 0.5f + Damage * 0.3f + Score * 0.2f;

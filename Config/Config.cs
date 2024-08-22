@@ -74,10 +74,18 @@ public partial class Mesharsky_TeamBalance
                     .AppendLine("score_balance_ratio = 1.6")
                     .AppendLine()
                     .AppendLine("# Whether to use PerformanceScore for balancing.")
+                    .AppendLine("# PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),")
+                    .AppendLine("# damage dealt, and the in-game score to evaluate a player's overall performance.")
+                    .AppendLine("# If set to true, the balance algorithm will use PerformanceScore to evaluate ")
+                    .AppendLine("# players when balancing teams, rather than just the in-game score.")
                     .AppendLine("# Default: true")
                     .AppendLine("use_performance_score = true")
                     .AppendLine()
                     .AppendLine("# Maximum allowed difference in team sizes.")
+                    .AppendLine("# This setting controls how much the team sizes are allowed to differ after balancing.")
+                    .AppendLine("# If set to 1, the algorithm will attempt to ensure that the difference in the number ")
+                    .AppendLine("# of players between the teams is no more than one. This helps prevent one team from")
+                    .AppendLine("# having a significant numerical advantage over the other.")
                     .AppendLine("# Default: 1")
                     .AppendLine("max_team_size_difference = 1");
 
