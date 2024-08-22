@@ -64,26 +64,40 @@ public partial class Mesharsky_TeamBalance
             bool ctValidChoice = (tTeam.Count >= maxPerTeam || ctTotalScore <= tTotalScore) && ctTeam.Count < maxPerTeam;
             bool tValidChoice = (ctTeam.Count >= maxPerTeam || tTotalScore <= ctTotalScore) && tTeam.Count < maxPerTeam;
 
+            // Ensure team size difference is not exceeded before making a move
             if (ctValidChoice && player.Team != (int)CsTeam.CounterTerrorist)
             {
-                PrintDebugMessage($"Move {player.PlayerName} to CT (ctTotal={ctTotalScore}, ctCount={ctTeam.Count + 1})");
-                ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
-                //Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Blue}Counter-Terrorists{ChatColors.Default} aby wyrównać drużyny.");
-                ctTeam.Add(player);
-                ctTotalScore += player.PerformanceScore;
-                balanceMade = true;
+                if (Math.Abs((ctTeam.Count + 1) - tTeam.Count) <= Config?.PluginSettings.MaxTeamSizeDifference)
+                {
+                    PrintDebugMessage($"Move {player.PlayerName} to CT (ctTotal={ctTotalScore}, ctCount={ctTeam.Count + 1})");
+                    ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
+                    ctTeam.Add(player);
+                    ctTotalScore += player.PerformanceScore;
+                    balanceMade = true;
+                }
+                else
+                {
+                    PrintDebugMessage("Skipping move to CT as it would exceed max team size difference.");
+                }
             }
             else if (tValidChoice && player.Team != (int)CsTeam.Terrorist)
             {
-                PrintDebugMessage($"Move {player.PlayerName} to T (tTotal={tTotalScore}, tCount={tTeam.Count + 1})");
-                ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
-                //Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Red}Terrorists{ChatColors.Default} aby wyrównać drużyny.");
-                tTeam.Add(player);
-                tTotalScore += player.PerformanceScore;
-                balanceMade = true;
+                if (Math.Abs(ctTeam.Count - (tTeam.Count + 1)) <= Config?.PluginSettings.MaxTeamSizeDifference)
+                {
+                    PrintDebugMessage($"Move {player.PlayerName} to T (tTotal={tTotalScore}, tCount={tTeam.Count + 1})");
+                    ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
+                    tTeam.Add(player);
+                    tTotalScore += player.PerformanceScore;
+                    balanceMade = true;
+                }
+                else
+                {
+                    PrintDebugMessage("Skipping move to T as it would exceed max team size difference.");
+                }
             }
             else
             {
+                // Keep the player on their current team
                 if (player.Team == (int)CsTeam.CounterTerrorist)
                 {
                     ctTeam.Add(player);
@@ -101,6 +115,7 @@ public partial class Mesharsky_TeamBalance
 
         return balanceMade;
     }
+
 
     private static bool ShouldTeamsBeRebalanced()
     {

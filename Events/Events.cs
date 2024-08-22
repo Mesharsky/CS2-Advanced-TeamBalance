@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Mesharsky_TeamBalance;
@@ -17,10 +18,13 @@ public partial class Mesharsky_TeamBalance
     }
 
     [GameEventHandler]
-    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
         UpdatePlayerStatsInCache();
-        AttemptBalanceTeams();
+        var endTime = ConVar.Find("mp_round_restart_delay")?.GetPrimitiveValue<float>();
+        var delay = endTime == null ? 1 : (endTime - 1);
+
+        AddTimer((float)delay, AttemptBalanceTeams);
 
         return HookResult.Continue;
     }
