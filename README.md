@@ -11,7 +11,7 @@ This plugin is designed to ensure fair and balanced gameplay by intelligently ma
 
 ## Installation
 
-1. **Download the Plugin**: Clone this repository or download the plugin files directly.
+1. **Download the Plugin**: Download from releases tab directly: https://github.com/Mesharsky/Advanced-TeamBalance/releases
 2. **Upload plugin to your counterstrikesharp folder**: Place the plugin folder inside counterstrikesharp folder. Standard installation.
 3. **Configure the Plugin**: Edit the `TeamBalance.toml` file to adjust the settings according to your server's needs (see below for details).
 4. **Restart Your Server**: Restart the server to load the plugin with your customized settings.
