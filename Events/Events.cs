@@ -20,14 +20,8 @@ public partial class Mesharsky_TeamBalance
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         UpdatePlayerStatsInCache();
-
         AttemptBalanceTeams();
 
-        if (BalanceHasBeenMade)
-        {
-            Server.PrintToChatAll($" {ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
-            PrintDebugMessage("Teams have been balanced.");
-        }
         return HookResult.Continue;
     }
 

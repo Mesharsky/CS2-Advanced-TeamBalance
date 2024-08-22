@@ -21,7 +21,7 @@ public partial class Mesharsky_TeamBalance
         if (balanceMade)
         {
             BalanceHasBeenMade = true;
-            Server.PrintToChatAll($"{ChatColors.Red}[Balans Drużyn] {ChatColors.Default}Drużyny zostały zbalansowane");
+            Server.PrintToChatAll($"{ChatColors.Red}[Team Balance] {ChatColors.Default}Teams has been balanced");
         }
         else
         {
@@ -68,7 +68,7 @@ public partial class Mesharsky_TeamBalance
             {
                 PrintDebugMessage($"Move {player.PlayerName} to CT (ctTotal={ctTotalScore}, ctCount={ctTeam.Count + 1})");
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
-                Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Blue}Counter-Terrorists{ChatColors.Default} aby wyrównać drużyny.");
+                //Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Blue}Counter-Terrorists{ChatColors.Default} aby wyrównać drużyny.");
                 ctTeam.Add(player);
                 ctTotalScore += player.PerformanceScore;
                 balanceMade = true;
@@ -77,7 +77,7 @@ public partial class Mesharsky_TeamBalance
             {
                 PrintDebugMessage($"Move {player.PlayerName} to T (tTotal={tTotalScore}, tCount={tTeam.Count + 1})");
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
-                Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Red}Terrorists{ChatColors.Default} aby wyrównać drużyny.");
+                //Server.PrintToChatAll($" {ChatColors.Green}{player.PlayerName} {ChatColors.Default} został przeniesiony do {ChatColors.Red}Terrorists{ChatColors.Default} aby wyrównać drużyny.");
                 tTeam.Add(player);
                 tTotalScore += player.PerformanceScore;
                 balanceMade = true;
