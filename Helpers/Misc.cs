@@ -52,37 +52,6 @@ public partial class Mesharsky_TeamBalance
         return true;
     }
 
-    private HookResult Command_JoinTeam(CCSPlayerController? player, CommandInfo info)
-    {
-        if (player != null && player.IsValid)
-        {
-            int startIndex = 0;
-            if (info.ArgCount > 0 && info.ArgByIndex(0).ToLower() == "jointeam")
-            {
-                startIndex = 1;
-            }
-
-            if (info.ArgCount > startIndex)
-            {
-                string teamArg = info.ArgByIndex(startIndex);
-
-                if (int.TryParse(teamArg, out int teamId))
-                {
-                    if (teamId >= (int)CsTeam.Spectator && teamId <= (int)CsTeam.CounterTerrorist)
-                    {
-                        if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
-                        {
-                            cachedPlayer.Team = teamId;
-                            PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {teamId} in cache.");
-                        }
-                    }
-                }
-            }
-        }
-
-        return HookResult.Continue;
-    }
-
     private static void UpdatePlayerTeamsInCache()
     {
         PrintDebugMessage("Updating player teams in cache...");
@@ -111,5 +80,37 @@ public partial class Mesharsky_TeamBalance
                 PrintDebugMessage($"Added {newPlayer.PlayerName} to cache with team {newPlayer.Team}");
             }
         }
+    }
+
+    private static bool CanMovePlayer(List<Player> fromTeam, List<Player> toTeam, Player player, int currentRound)
+    {
+        // Check if moving the player would exceed max team size difference
+        if (Math.Abs(fromTeam.Count - 1 - (toTeam.Count + 1)) > Config?.PluginSettings.MaxTeamSizeDifference)
+        {
+            return false;
+        }
+
+        // Check if the player has been moved recently
+        if (currentRound - player.LastMovedRound < Config?.PluginSettings.MinRoundsBetweenMoves)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static int GetCurrentRound()
+    {
+        var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+
+        int rounds = gameRules.TotalRoundsPlayed;
+        
+        return rounds;
+    }
+
+    public static bool IsWarmup()
+    {
+        return Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!
+            .WarmupPeriod;
     }
 }

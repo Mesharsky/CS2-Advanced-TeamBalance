@@ -17,5 +17,9 @@ public partial class Mesharsky_TeamBalance
 
         // Performance score based on KDA, Damage, and Score
         public float PerformanceScore => KDA * 0.5f + Damage * 0.3f + Score * 0.2f;
+
+        // Track the round number when the player was last moved
+        public int LastMovedRound { get; set; } = 0;
     }
 }
+

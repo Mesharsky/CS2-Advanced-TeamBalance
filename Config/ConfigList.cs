@@ -13,5 +13,6 @@ public partial class Mesharsky_TeamBalance
         public float MaxScoreBalanceRatio { get; set; } = 1.6f;
         public bool UsePerformanceScore { get; set; } = true;
         public int MaxTeamSizeDifference { get; set; } = 1;
+        public int MinRoundsBetweenMoves { get; set; } = 2;
     }
 }

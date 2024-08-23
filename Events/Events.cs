@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 
@@ -15,6 +16,20 @@ public partial class Mesharsky_TeamBalance
     {
         Event_PlayerJoin();
         Event_PlayerDisconnect();
+    }
+
+    [GameEventHandler]
+    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        if (!IsWarmup())
+            return HookResult.Continue;
+
+        var endTime = ConVar.Find("mp_warmuptime")?.GetPrimitiveValue<float>();
+        var delay = endTime == null ? 1 : (endTime - 1);
+
+        AddTimer((float)delay, AttemptBalanceTeams);
+
+        return HookResult.Continue;
     }
 
     [GameEventHandler]
@@ -116,4 +131,77 @@ public partial class Mesharsky_TeamBalance
             }
         }
     }
+
+    private HookResult Command_JoinTeam(CCSPlayerController? player, CommandInfo info)
+    {
+        if (!IsWarmup())
+            return HookResult.Continue;
+
+        if (player != null && player.IsValid)
+        {
+            int startIndex = 0;
+            if (info.ArgCount > 0 && info.ArgByIndex(0).ToLower() == "jointeam")
+            {
+                startIndex = 1;
+            }
+
+            if (info.ArgCount > startIndex)
+            {
+                string teamArg = info.ArgByIndex(startIndex);
+
+                if (int.TryParse(teamArg, out int teamId))
+                {
+                    if (teamId >= (int)CsTeam.Spectator && teamId <= (int)CsTeam.CounterTerrorist)
+                    {
+                        if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
+                        {
+                            var currentTeam = cachedPlayer.Team;
+                            if (currentTeam == teamId)
+                            {
+                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} is already on team {teamId}. No change needed.");
+                                return HookResult.Continue;
+                            }
+
+                            int ctPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.CounterTerrorist);
+                            int tPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.Terrorist);
+
+                            if (currentTeam == (int)CsTeam.CounterTerrorist)
+                            {
+                                ctPlayerCount--;
+                            }
+                            else if (currentTeam == (int)CsTeam.Terrorist)
+                            {
+                                tPlayerCount--;
+                            }
+
+                            if (teamId == (int)CsTeam.CounterTerrorist)
+                            {
+                                ctPlayerCount++;
+                            }
+                            else if (teamId == (int)CsTeam.Terrorist)
+                            {
+                                tPlayerCount++;
+                            }
+
+                            if (Math.Abs(ctPlayerCount - tPlayerCount) <= Config?.PluginSettings.MaxTeamSizeDifference)
+                            {
+                                cachedPlayer.Team = teamId;
+                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {teamId} in cache.");
+                            }
+                            else
+                            {
+                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
+                                //player.PrintToChat($" {ChatColors.Red}[Csowicze] {ChatColors.Default} Nie możesz zmienić drużyny. Ilość graczy nie będzie równa");
+                                player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} you cannot switch to this team as it would violate the team balance");
+                                return HookResult.Handled;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return HookResult.Continue;
+    }
+
 }
