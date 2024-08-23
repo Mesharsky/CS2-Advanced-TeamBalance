@@ -55,6 +55,12 @@ use_performance_score = true
 # having a significant numerical advantage over the other.
 # Default: 1
 max_team_size_difference = 1
+
+# The minimum number of rounds that must pass before a player can be moved again.
+# This setting prevents the same player from being moved back and forth between
+# teams multiple times in quick succession.
+# Default: 2
+min_rounds_between_moves = 2
 ```
 ### Key Settings Explained
 - **`minimum_players`**: The minimum number of players required before the plugin activates. This ensures that balancing doesn't occur when there are too few players to make meaningful adjustments.
