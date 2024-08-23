@@ -52,36 +52,6 @@ public partial class Mesharsky_TeamBalance
         return true;
     }
 
-    private static void UpdatePlayerTeamsInCache()
-    {
-        PrintDebugMessage("Updating player teams in cache...");
-
-        var allPlayers = Utilities.GetPlayers()
-            .Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected);
-
-        foreach (var player in allPlayers)
-        {
-            if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
-            {
-                cachedPlayer.Team = (int)player.Team;
-                PrintDebugMessage($"Updated {cachedPlayer.PlayerName} in cache to team {cachedPlayer.Team}");
-            }
-            else
-            {
-                var newPlayer = new Player
-                {
-                    PlayerName = player.PlayerName,
-                    PlayerSteamID = player.SteamID,
-                    Team = (int)player.Team,
-                    Score = player.Score
-                };
-
-                playerCache.TryAdd(player.SteamID, newPlayer);
-                PrintDebugMessage($"Added {newPlayer.PlayerName} to cache with team {newPlayer.Team}");
-            }
-        }
-    }
-
     private static bool CanMovePlayer(List<Player> fromTeam, List<Player> toTeam, Player player, int currentRound)
     {
         // Check if moving the player would exceed max team size difference

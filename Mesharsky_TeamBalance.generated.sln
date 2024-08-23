@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mesharsky_TeamBalance", "Mesharsky_TeamBalance.csproj", "{B61EA9D6-AA3C-49B6-8B71-E668CD9C73F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mesharsky_TeamBalance", "Mesharsky_TeamBalance.csproj", "{C8CC49EC-E8B0-4CEC-9D1C-E89D7852906A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B61EA9D6-AA3C-49B6-8B71-E668CD9C73F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B61EA9D6-AA3C-49B6-8B71-E668CD9C73F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B61EA9D6-AA3C-49B6-8B71-E668CD9C73F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B61EA9D6-AA3C-49B6-8B71-E668CD9C73F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8CC49EC-E8B0-4CEC-9D1C-E89D7852906A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8CC49EC-E8B0-4CEC-9D1C-E89D7852906A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8CC49EC-E8B0-4CEC-9D1C-E89D7852906A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8CC49EC-E8B0-4CEC-9D1C-E89D7852906A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

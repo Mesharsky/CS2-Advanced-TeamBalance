@@ -10,8 +10,6 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    private static readonly ConcurrentDictionary<ulong, Player> playerCache = new();
-
     public void Initialize_Events()
     {
         Event_PlayerJoin();
@@ -134,74 +132,66 @@ public partial class Mesharsky_TeamBalance
 
     private HookResult Command_JoinTeam(CCSPlayerController? player, CommandInfo info)
     {
-        if (!IsWarmup())
+        if (!IsWarmup() || player == null || !player.IsValid || info.ArgCount <= 0)
             return HookResult.Continue;
 
-        if (player != null && player.IsValid)
+        int teamId = ParseTeamId(info);
+        if (teamId < (int)CsTeam.Spectator || teamId > (int)CsTeam.CounterTerrorist)
+            return HookResult.Continue;
+
+        if (!playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
+            return HookResult.Continue;
+
+        if (cachedPlayer.Team == teamId)
         {
-            int startIndex = 0;
-            if (info.ArgCount > 0 && info.ArgByIndex(0).ToLower() == "jointeam")
-            {
-                startIndex = 1;
-            }
-
-            if (info.ArgCount > startIndex)
-            {
-                string teamArg = info.ArgByIndex(startIndex);
-
-                if (int.TryParse(teamArg, out int teamId))
-                {
-                    if (teamId >= (int)CsTeam.Spectator && teamId <= (int)CsTeam.CounterTerrorist)
-                    {
-                        if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
-                        {
-                            var currentTeam = cachedPlayer.Team;
-                            if (currentTeam == teamId)
-                            {
-                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} is already on team {teamId}. No change needed.");
-                                return HookResult.Continue;
-                            }
-
-                            int ctPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.CounterTerrorist);
-                            int tPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.Terrorist);
-
-                            if (currentTeam == (int)CsTeam.CounterTerrorist)
-                            {
-                                ctPlayerCount--;
-                            }
-                            else if (currentTeam == (int)CsTeam.Terrorist)
-                            {
-                                tPlayerCount--;
-                            }
-
-                            if (teamId == (int)CsTeam.CounterTerrorist)
-                            {
-                                ctPlayerCount++;
-                            }
-                            else if (teamId == (int)CsTeam.Terrorist)
-                            {
-                                tPlayerCount++;
-                            }
-
-                            if (Math.Abs(ctPlayerCount - tPlayerCount) <= Config?.PluginSettings.MaxTeamSizeDifference)
-                            {
-                                cachedPlayer.Team = teamId;
-                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {teamId} in cache.");
-                            }
-                            else
-                            {
-                                PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
-                                //player.PrintToChat($" {ChatColors.Red}[Csowicze] {ChatColors.Default} Nie możesz zmienić drużyny. Ilość graczy nie będzie równa");
-                                player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} you cannot switch to this team as it would violate the team balance");
-                                return HookResult.Handled;
-                            }
-                        }
-                    }
-                }
-            }
+            PrintDebugMessage($"Player {cachedPlayer.PlayerName} is already on team {teamId}. No change needed.");
+            return HookResult.Continue;
         }
 
+        if (!CanSwitchTeams(cachedPlayer, teamId))
+        {
+            PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
+            player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} you cannot switch to this team as it would violate the team balance");
+            return HookResult.Handled;
+        }
+
+        UpdateTeamAssignment(cachedPlayer, teamId);
         return HookResult.Continue;
+    }
+
+    private static int ParseTeamId(CommandInfo info)
+    {
+        int startIndex = info.ArgByIndex(0).ToLower() == "jointeam" ? 1 : 0;
+        return info.ArgCount > startIndex && int.TryParse(info.ArgByIndex(startIndex), out int teamId) ? teamId : -1;
+    }
+
+    private static bool CanSwitchTeams(Player cachedPlayer, int newTeamId)
+    {
+        int ctPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.CounterTerrorist);
+        int tPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.Terrorist);
+
+        AdjustPlayerCountForSwitch(cachedPlayer, newTeamId, ref ctPlayerCount, ref tPlayerCount);
+
+        return Math.Abs(ctPlayerCount - tPlayerCount) <= Config?.PluginSettings.MaxTeamSizeDifference;
+    }
+
+    private static void AdjustPlayerCountForSwitch(Player cachedPlayer, int newTeamId, ref int ctPlayerCount, ref int tPlayerCount)
+    {
+        if (cachedPlayer.Team == (int)CsTeam.CounterTerrorist)
+            ctPlayerCount--;
+        else if (cachedPlayer.Team == (int)CsTeam.Terrorist)
+            tPlayerCount--;
+
+        if (newTeamId == (int)CsTeam.CounterTerrorist)
+            ctPlayerCount++;
+        else if (newTeamId == (int)CsTeam.Terrorist)
+            tPlayerCount++;
+    }
+
+    private void UpdateTeamAssignment(Player cachedPlayer, int newTeamId)
+    {
+        cachedPlayer.Team = newTeamId;
+        PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {newTeamId} in cache.");
     }
 
 }
