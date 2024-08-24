@@ -59,12 +59,6 @@ public partial class Mesharsky_TeamBalance
             return false;
         }
 
-        // Check if the player has been moved recently
-        if (currentRound - player.LastMovedRound < Config?.PluginSettings.MinRoundsBetweenMoves)
-        {
-            return false;
-        }
-
         return true;
     }
 

@@ -6,6 +6,7 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
+    public bool GlobalBalanceMade = false;
     private void AttemptBalanceTeams()
     {
         PrintDebugMessage("Attempting to balance teams...");
@@ -20,11 +21,11 @@ public partial class Mesharsky_TeamBalance
 
         if (balanceMade)
         {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced.");
+            GlobalBalanceMade = true;
         }
         else
         {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
+            GlobalBalanceMade = false;
         }
     }
 

@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
@@ -18,6 +17,14 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        if (GlobalBalanceMade)
+        {
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced.");
+        }
+        else
+        {
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
+        }
         if (!IsWarmup())
             return HookResult.Continue;
 
@@ -72,7 +79,6 @@ public partial class Mesharsky_TeamBalance
                 cachedPlayer.Deaths = player.ActionTrackingServices.MatchStats.Deaths;
                 cachedPlayer.Damage = player.ActionTrackingServices.MatchStats.Damage;
                 cachedPlayer.Score = player.Score;
-                PrintDebugMessage($"Updated {cachedPlayer.PlayerName} stats in cache.");
             }
             else
             {
@@ -169,5 +175,4 @@ public partial class Mesharsky_TeamBalance
         cachedPlayer.Team = newTeamId;
         PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {newTeamId} in cache.");
     }
-
 }
