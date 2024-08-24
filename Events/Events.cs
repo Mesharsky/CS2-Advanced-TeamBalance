@@ -135,7 +135,6 @@ public partial class Mesharsky_TeamBalance
         return HookResult.Continue;
     }
 
-
     private static int ParseTeamId(CommandInfo info)
     {
         int startIndex = info.ArgByIndex(0).ToLower() == "jointeam" ? 1 : 0;

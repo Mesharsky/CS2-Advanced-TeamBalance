@@ -21,7 +21,6 @@ public partial class Mesharsky_TeamBalance
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
             {
                 cachedPlayer.Team = (int)player.Team;
-                PrintDebugMessage($"Updated {cachedPlayer.PlayerName} in cache to team {cachedPlayer.Team}");
             }
             else
             {
@@ -34,7 +33,6 @@ public partial class Mesharsky_TeamBalance
                 };
 
                 playerCache.TryAdd(player.SteamID, newPlayer);
-                PrintDebugMessage($"Added {newPlayer.PlayerName} to cache with team {newPlayer.Team}");
             }
         }
     }
@@ -45,8 +43,6 @@ public partial class Mesharsky_TeamBalance
             .Where(p => p.Team == (int)CsTeam.CounterTerrorist || p.Team == (int)CsTeam.Terrorist)
             .OrderByDescending(p => Config?.PluginSettings.UsePerformanceScore == true ? p.PerformanceScore : p.Score)
             .ToList();
-
-        players.Shuffle();
 
         PrintDebugMessage($"Total valid players for rebalance: {players.Count}");
         return players;
