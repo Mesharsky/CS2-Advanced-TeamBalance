@@ -12,7 +12,6 @@ public partial class Mesharsky_TeamBalance
 {
     public void Initialize_Events()
     {
-        Event_PlayerJoin();
         Event_PlayerDisconnect();
     }
 
@@ -42,21 +41,6 @@ public partial class Mesharsky_TeamBalance
         return HookResult.Continue;
     }
 
-    public void Event_PlayerJoin()
-    {
-        RegisterListener<Listeners.OnClientPutInServer>((slot) =>
-        {
-            AddTimer(3.0f, () =>
-            {
-                var player = Utilities.GetPlayerFromSlot(slot);
-                if (player == null || !player.IsValid || player.IsBot)
-                    return;
-
-                ProcessUserInformation(player);
-            });
-        });
-    }
-
     public void Event_PlayerDisconnect()
     {
         RegisterEventHandler((EventPlayerDisconnect @event, GameEventInfo info) =>
@@ -72,27 +56,6 @@ public partial class Mesharsky_TeamBalance
 
             return HookResult.Continue;
         });
-    }
-
-    private static void ProcessUserInformation(CCSPlayerController player)
-    {
-        if (player == null || !player.IsValid || player.IsBot)
-            return;
-
-        ulong steamId = player.SteamID;
-        var cachedPlayer = new Player
-        {
-            PlayerName = player.PlayerName,
-            PlayerSteamID = steamId,
-            Team = player.TeamNum,
-            Kills = 0,
-            Deaths = 0,
-            Damage = 0,
-            Score = 0,
-        };
-
-        playerCache.AddOrUpdate(steamId, cachedPlayer, (key, oldPlayer) => cachedPlayer);
-        PrintDebugMessage($"Player {player.PlayerName} with SteamID {steamId} added to cache.");
     }
 
     private static void UpdatePlayerStatsInCache()
@@ -132,10 +95,23 @@ public partial class Mesharsky_TeamBalance
 
     private HookResult Command_JoinTeam(CCSPlayerController? player, CommandInfo info)
     {
-        if (!IsWarmup() || player == null || !player.IsValid || info.ArgCount <= 0)
+        if (IsWarmup())
+            return HookResult.Continue;
+
+        if (player == null || !player.IsValid)
             return HookResult.Continue;
 
         int teamId = ParseTeamId(info);
+
+        if (teamId == (int)CsTeam.Spectator)
+        {
+            if (playerCache.TryGetValue(player.SteamID, out var cPlayer))
+            {
+                UpdateTeamAssignment(cPlayer, teamId);
+            }
+            return HookResult.Continue;
+        }
+
         if (teamId < (int)CsTeam.Spectator || teamId > (int)CsTeam.CounterTerrorist)
             return HookResult.Continue;
 
@@ -158,6 +134,7 @@ public partial class Mesharsky_TeamBalance
         UpdateTeamAssignment(cachedPlayer, teamId);
         return HookResult.Continue;
     }
+
 
     private static int ParseTeamId(CommandInfo info)
     {
@@ -188,7 +165,7 @@ public partial class Mesharsky_TeamBalance
             tPlayerCount++;
     }
 
-    private void UpdateTeamAssignment(Player cachedPlayer, int newTeamId)
+    private static void UpdateTeamAssignment(Player cachedPlayer, int newTeamId)
     {
         cachedPlayer.Team = newTeamId;
         PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {newTeamId} in cache.");

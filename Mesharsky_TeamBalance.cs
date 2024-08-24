@@ -6,7 +6,7 @@ namespace Mesharsky_TeamBalance;
 public partial class Mesharsky_TeamBalance : BasePlugin
 {
     public override string ModuleName => "Mesharsky Team Balance";
-    public override string ModuleVersion => "0.2";
+    public override string ModuleVersion => "0.5";
     public override string ModuleAuthor => "Mesharsky";
 
     public override void Load(bool hotReload)
