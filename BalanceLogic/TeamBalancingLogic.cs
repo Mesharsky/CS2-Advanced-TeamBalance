@@ -64,8 +64,11 @@ public partial class Mesharsky_TeamBalance
     {
         foreach (var player in players)
         {
-            // Check if the player needs to be reassigned
-            if (newAssignments.ContainsKey(player)) continue;
+            if (newAssignments.ContainsKey(player))
+            {
+                PrintDebugMessage($"Player {player.PlayerName} already assigned to {newAssignments[player]}.");
+                continue;
+            }
 
             bool ctValidChoice = ctTeam.Count < maxPerTeam && ctTeam.Count < tTeam.Count + Config?.PluginSettings.MaxTeamSizeDifference;
             bool tValidChoice = tTeam.Count < maxPerTeam && tTeam.Count < ctTeam.Count + Config?.PluginSettings.MaxTeamSizeDifference;
@@ -83,6 +86,11 @@ public partial class Mesharsky_TeamBalance
                 tTeam.Add(player);
                 tTotalScore += player.PerformanceScore;
                 PrintDebugMessage($"Assigned {player.PlayerName} to T Team.");
+            }
+            else
+            {
+                newAssignments[player] = (CsTeam)player.Team;
+                PrintDebugMessage($"Confirmed {player.PlayerName} remains in their current team: {newAssignments[player]}.");
             }
         }
     }
@@ -106,7 +114,10 @@ public partial class Mesharsky_TeamBalance
             ));
 
             if (playerToMove == null)
+            {
+                PrintDebugMessage("No eligible player found to move during further balancing.");
                 break;
+            }
 
             if (localCtTotalScore > localTTotalScore)
             {
@@ -132,6 +143,7 @@ public partial class Mesharsky_TeamBalance
         tTotalScore = localTTotalScore;
     }
 
+
     private static bool ApplyTeamChanges(Dictionary<Player, CsTeam> newAssignments, int currentRound)
     {
         bool balanceMade = false;
@@ -142,6 +154,7 @@ public partial class Mesharsky_TeamBalance
 
             if (player.Team != (int)newTeam)
             {
+                PrintDebugMessage($"Applying team change for {player.PlayerName} to {newTeam}");
                 if (ChangePlayerTeam(player.PlayerSteamID, newTeam))
                 {
                     player.LastMovedRound = currentRound;
@@ -156,7 +169,7 @@ public partial class Mesharsky_TeamBalance
         }
 
         PrintDebugMessage($"Final Team Distribution - CT: {newAssignments.Count(p => p.Value == CsTeam.CounterTerrorist)} players, T: {newAssignments.Count(p => p.Value == CsTeam.Terrorist)} players");
-
         return balanceMade;
     }
+
 }
