@@ -82,25 +82,28 @@ public partial class Mesharsky_TeamBalance
             // Iterate over the "winning" team's players to find the best swap
             foreach (var ctPlayer in CT.Stats.OrderByDescending(p => p.PerformanceScore))
             {
-                // Calculate the new difference after the swap
+                // Calculate the new scores after the swap
                 float newCtScore = ctScore - ctPlayer.PerformanceScore + bestTPlayer.PerformanceScore;
                 float newTScore = tScore - bestTPlayer.PerformanceScore + ctPlayer.PerformanceScore;
-                float newDiff = Math.Abs(newCtScore - newTScore);
+
+                float biggerScore = Math.Max(newCtScore, newTScore);
+                float smallerScore = Math.Min(newCtScore, newTScore);
+                float ratio = biggerScore / smallerScore;
 
                 // If this swap improves the balance, store it
-                if (newDiff < bestNewDiff)
+                if (ratio <= (Config?.PluginSettings.MaxScoreBalanceRatio ?? 2.0f))
                 {
-                    bestNewDiff = newDiff;
                     bestCtPlayer = ctPlayer;
-
-                    // Exit if the swap fucks up balance ratio
-                    if (newDiff <= (Config?.PluginSettings.MaxScoreBalanceRatio ?? 1.0f))
-                    {
-                        break;
-                    }
+                    break; // Early exit as the teams are now balanced according to the ratio
+                }
+                else if (Math.Abs(newCtScore - newTScore) < bestNewDiff)
+                {
+                    bestNewDiff = Math.Abs(newCtScore - newTScore);
+                    bestCtPlayer = ctPlayer;
                 }
             }
 
+            // Return the best swap if found
             if (bestCtPlayer != null)
             {
                 return (bestCtPlayer, bestTPlayer);
@@ -108,6 +111,7 @@ public partial class Mesharsky_TeamBalance
 
             return null;
         }
+
 
         public void PerformSwap(PlayerStats ctPlayer, PlayerStats tPlayer)
         {
