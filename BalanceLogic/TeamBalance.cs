@@ -1,5 +1,3 @@
-using CounterStrikeSharp.API;
-using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Mesharsky_TeamBalance;
@@ -35,12 +33,10 @@ public partial class Mesharsky_TeamBalance
 
         UpdatePlayerTeamsInCache();
 
-        var players = Utilities.GetPlayers()
-            .Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected)
-            .ToList();
+        var players = playerCache.Values.ToList();
 
-        int ctPlayerCount = players.Count(p => p.Team == CsTeam.CounterTerrorist);
-        int tPlayerCount = players.Count(p => p.Team == CsTeam.Terrorist);
+        int ctPlayerCount = players.Count(p => p.Team == (int)CsTeam.CounterTerrorist);
+        int tPlayerCount = players.Count(p => p.Team == (int)CsTeam.Terrorist);
 
         if (ctPlayerCount + tPlayerCount < Config?.PluginSettings.MinPlayers)
         {
@@ -48,8 +44,13 @@ public partial class Mesharsky_TeamBalance
             return false;
         }
 
-        int ctScore = players.Where(p => p.Team == CsTeam.CounterTerrorist).Sum(p => p.Score);
-        int tScore = players.Where(p => p.Team == CsTeam.Terrorist).Sum(p => p.Score);
+        float ctScore = Config?.PluginSettings.UsePerformanceScore == true
+            ? players.Where(p => p.Team == (int)CsTeam.CounterTerrorist).Sum(p => p.PerformanceScore)
+            : players.Where(p => p.Team == (int)CsTeam.CounterTerrorist).Sum(p => p.Score);
+
+        float tScore = Config?.PluginSettings.UsePerformanceScore == true
+            ? players.Where(p => p.Team == (int)CsTeam.Terrorist).Sum(p => p.PerformanceScore)
+            : players.Where(p => p.Team == (int)CsTeam.Terrorist).Sum(p => p.Score);
 
         if (ctScore > tScore * Config?.PluginSettings.MaxScoreBalanceRatio || tScore > ctScore * Config?.PluginSettings.MaxScoreBalanceRatio)
         {

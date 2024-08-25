@@ -53,6 +53,7 @@ public partial class Mesharsky_TeamBalance
         RegisterEventHandler((EventPlayerDisconnect @event, GameEventInfo info) =>
         {
             var player = @event.Userid;
+
             if (player == null)
                 return HookResult.Continue;
 
@@ -76,6 +77,7 @@ public partial class Mesharsky_TeamBalance
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
             {
                 cachedPlayer.Kills = player.ActionTrackingServices!.MatchStats.Kills;
+                cachedPlayer.Assists = player.ActionTrackingServices!.MatchStats.Assists;
                 cachedPlayer.Deaths = player.ActionTrackingServices.MatchStats.Deaths;
                 cachedPlayer.Damage = player.ActionTrackingServices.MatchStats.Damage;
                 cachedPlayer.Score = player.Score;
@@ -88,6 +90,7 @@ public partial class Mesharsky_TeamBalance
                     PlayerSteamID = player.SteamID,
                     Team = player.TeamNum,
                     Kills = player.ActionTrackingServices!.MatchStats.Kills,
+                    Assists = player.ActionTrackingServices!.MatchStats.Assists,
                     Deaths = player.ActionTrackingServices.MatchStats.Deaths,
                     Damage = player.ActionTrackingServices.MatchStats.Damage,
                     Score = player.Score,

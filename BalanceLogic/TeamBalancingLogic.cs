@@ -31,23 +31,17 @@ public partial class Mesharsky_TeamBalance
             attempts++;
             var difference = ctTeam.Count - tTeam.Count;
 
-            // Force move when team sizes are highly imbalanced, even if it worsens the score balance
-            bool forceMove = attempts >= 5;
-
             if (difference > 0)
             {
-                // More CTs, move one to T
                 var playerToMove = ctTeam.OrderByDescending(p => p.PerformanceScore).First();
-                MovePlayer(playerToMove, tTeam, ctTeam, ref ctTotalScore, ref tTotalScore, forceMove);
+                MovePlayer(playerToMove, tTeam, ctTeam, ref ctTotalScore, ref tTotalScore);
             }
             else
             {
-                // More Ts, move one to CT
                 var playerToMove = tTeam.OrderByDescending(p => p.PerformanceScore).First();
-                MovePlayer(playerToMove, ctTeam, tTeam, ref tTotalScore, ref ctTotalScore, forceMove);
+                MovePlayer(playerToMove, ctTeam, tTeam, ref tTotalScore, ref ctTotalScore);
             }
 
-            // Check if further moves are needed or if the loop should be terminated
             if (attempts >= 10)
             {
                 PrintDebugMessage("Maximum move attempts reached. Exiting to prevent infinite loop.");
@@ -56,7 +50,7 @@ public partial class Mesharsky_TeamBalance
         }
 
         // Step 2: Balance teams by TRADING players to minimize performance score differences
-        if (scoreDifferenceTriggered)
+        if (scoreDifferenceTriggered || !sizeDifferenceTriggered)
         {
             SwapPlayersToBalance(ctTeam, tTeam, ref ctTotalScore, ref tTotalScore, currentRound);
         }
@@ -68,15 +62,14 @@ public partial class Mesharsky_TeamBalance
         return balanceMade;
     }
 
-    // This method is responsible for swapping players between teams to balance performance scores
     private static void SwapPlayersToBalance(List<Player> ctTeam, List<Player> tTeam, ref float ctTotalScore, ref float tTotalScore, int currentRound)
     {
-        int maxAttempts = 10;  // Set a maximum number of attempts to prevent infinite loops
+        int maxAttempts = 10;
         int attempts = 0;
 
         while (Math.Abs(ctTotalScore - tTotalScore) > Config?.PluginSettings.MaxScoreBalanceRatio && attempts < maxAttempts)
         {
-            attempts++;  // Increment the attempt counter
+            attempts++;
 
             var difference = Math.Abs(ctTotalScore - tTotalScore);
             PrintDebugMessage($"Attempt {attempts}: Current Score Difference = {difference}, Max Allowed = {tTotalScore * Config?.PluginSettings.MaxScoreBalanceRatio}");
@@ -88,8 +81,19 @@ public partial class Mesharsky_TeamBalance
             // If both players are found, proceed with the trade
             if (bestCtPlayerToMove.HasValue && bestTPlayerToMove.HasValue)
             {
-                // Perform the trade
-                TradePlayers(bestCtPlayerToMove.Value.Item1, bestTPlayerToMove.Value.Item1, ctTeam, tTeam, ref ctTotalScore, ref tTotalScore);
+                var ctPlayer = bestCtPlayerToMove.Value.Item1;
+                var tPlayer = bestTPlayerToMove.Value.Item1;
+
+                // Ensure both players are valid before proceeding
+                if (ctPlayer != null && tPlayer != null)
+                {
+                    TradePlayers(ctPlayer, tPlayer, ctTeam, tTeam, ref ctTotalScore, ref tTotalScore);
+                }
+                else
+                {
+                    PrintDebugMessage("One of the players is null. Skipping trade.");
+                    break;
+                }
             }
             else
             {
@@ -112,7 +116,8 @@ public partial class Mesharsky_TeamBalance
         }
     }
 
-    // This method is responsible for finding the best player to move based on minimizing the performance difference
+
+    // Find the best player to move based on minimizing the performance difference
     private static (Player, float)? FindBestPlayerToMove(List<Player> fromTeam, List<Player> toTeam, float fromTeamScore, float toTeamScore, int currentRound, float difference)
     {
         var potentialPlayers = fromTeam
@@ -136,12 +141,6 @@ public partial class Mesharsky_TeamBalance
 
     private static void TradePlayers(Player ctPlayer, Player tPlayer, List<Player> ctTeam, List<Player> tTeam, ref float ctTotalScore, ref float tTotalScore)
     {
-        if (ctPlayer == null || tPlayer == null)
-        {
-            PrintDebugMessage("One of the players is null. Skipping trade.");
-            return;
-        }
-
         // Validate that both players are still on their respective teams
         if (!ctTeam.Contains(ctPlayer) || !tTeam.Contains(tPlayer))
         {
@@ -191,17 +190,15 @@ public partial class Mesharsky_TeamBalance
             return;
         }
 
-        // Move the player
         fromTeam.Remove(player);
         toTeam.Add(player);
 
-        // Adjust the team scores
         fromTeamScore -= player.PerformanceScore;
         toTeamScore += player.PerformanceScore;
 
         PrintDebugMessage($"Moved {player.PlayerName} to the opposite team. New scores: CT = {fromTeamScore}, T = {toTeamScore}");
     }
-    
+
     private static bool ApplyTeamChanges(List<Player> ctTeam, List<Player> tTeam, int currentRound)
     {
         bool balanceMade = false;
@@ -211,7 +208,6 @@ public partial class Mesharsky_TeamBalance
             if (player.Team != (int)CsTeam.CounterTerrorist)
             {
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
-                player.LastMovedRound = currentRound;
                 balanceMade = true;
             }
         }
@@ -221,7 +217,6 @@ public partial class Mesharsky_TeamBalance
             if (player.Team != (int)CsTeam.Terrorist)
             {
                 ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
-                player.LastMovedRound = currentRound;
                 balanceMade = true;
             }
         }

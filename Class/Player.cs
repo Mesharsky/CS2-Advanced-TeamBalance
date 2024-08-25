@@ -10,16 +10,16 @@ public partial class Mesharsky_TeamBalance
         public int Score { get; set; }
         public int Kills { get; set; }
         public int Deaths { get; set; }
+        public int Assists { get; set; }
         public int Damage { get; set; }
 
         // KDA Ratio: (Kills + Assists) / Deaths
-        public float KDA => Deaths == 0 ? Kills : (float)Kills / Deaths;
+        public float KDA => Deaths == 0 ? (Kills + Assists) : (float)(Kills + Assists) / Deaths;
 
-        // Performance score based on KDA, Damage, and Score
-        public float PerformanceScore => KDA * 0.5f + Damage * 0.3f + Score * 0.2f;
+        // Consistency Factor: Measures player's consistent impact over the rounds (based on kills and damage)
+        public float ConsistencyFactor => (Kills * 0.6f + Damage * 0.4f) / (Kills + Deaths + 1);
 
-        // Track the round number when the player was last moved
-        public int LastMovedRound { get; set; } = 0;
+        // Performance Score
+        public float PerformanceScore => (Damage * 0.5f) + (KDA * 0.4f) + (ConsistencyFactor * 0.1f);
     }
 }
-

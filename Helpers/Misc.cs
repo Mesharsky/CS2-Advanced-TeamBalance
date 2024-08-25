@@ -53,11 +53,8 @@ public partial class Mesharsky_TeamBalance
 
     private static bool CanMovePlayer(List<Player> fromTeam, List<Player> toTeam, Player player, int currentRound)
     {
-        // Check if moving the player would exceed max team size difference
         if (Math.Abs(fromTeam.Count - 1 - (toTeam.Count + 1)) > Config?.PluginSettings.MaxTeamSizeDifference)
-        {
             return false;
-        }
 
         return true;
     }
