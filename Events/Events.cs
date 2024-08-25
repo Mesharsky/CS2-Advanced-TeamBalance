@@ -17,6 +17,22 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        if (GlobalBalanceMade)
+        {
+            var ctPlayerCount = balanceStats.CT.Stats.Count;
+            var tPlayerCount = balanceStats.T.Stats.Count;
+            var ctTotalScore = balanceStats.CT.TotalPerformanceScore;
+            var tTotalScore = balanceStats.T.TotalPerformanceScore;
+
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced.");
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] CT: {ctPlayerCount} players, {ctTotalScore} score");
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] T: {tPlayerCount} players, {tTotalScore} score.");
+        }
+        else
+        {
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
+        }
+
         if (!IsWarmup())
             return HookResult.Continue;
 

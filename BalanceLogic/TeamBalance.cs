@@ -11,7 +11,6 @@ public partial class Mesharsky_TeamBalance
     {
         PrintDebugMessage("Attempting to balance teams...");
 
-        // Reset balance flag before attempting balance
         GlobalBalanceMade = false;
 
         if (!ShouldTeamsBeRebalanced())
@@ -28,22 +27,6 @@ public partial class Mesharsky_TeamBalance
 
         bool balanceMade = RebalancePlayers(players);
         GlobalBalanceMade = balanceMade;
-
-        if (GlobalBalanceMade)
-        {
-            var ctPlayerCount = balanceStats.CT.Stats.Count;
-            var tPlayerCount = balanceStats.T.Stats.Count;
-            var ctTotalScore = balanceStats.CT.TotalPerformanceScore;
-            var tTotalScore = balanceStats.T.TotalPerformanceScore;
-
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced..");
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] CT: {ctPlayerCount} players, {ctTotalScore} score");
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] T: {tPlayerCount} players, {tTotalScore} score.");
-        }
-        else
-        {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
-        }
     }
 
     private static bool ShouldTeamsBeRebalanced()
@@ -68,6 +51,12 @@ public partial class Mesharsky_TeamBalance
             return false;
         }
 
+        if (Math.Abs(ctPlayerCount - tPlayerCount) > (Config?.PluginSettings.MaxTeamSizeDifference ?? 1))
+        {
+            PrintDebugMessage("Team sizes are not equal. Balance needed.");
+            return true;
+        }
+
         float ctScore = Config?.PluginSettings.UsePerformanceScore == true
             ? players.Where(p => p.Team == (int)CsTeam.CounterTerrorist).Sum(p => p.PerformanceScore)
             : players.Where(p => p.Team == (int)CsTeam.CounterTerrorist).Sum(p => p.Score);
@@ -79,12 +68,6 @@ public partial class Mesharsky_TeamBalance
         if (ctScore > tScore * (Config?.PluginSettings.MaxScoreBalanceRatio ?? 1.0f) || tScore > ctScore * (Config?.PluginSettings.MaxScoreBalanceRatio ?? 1.0f))
         {
             PrintDebugMessage("Score difference is too high. Balance required.");
-            return true;
-        }
-
-        if (Math.Abs(ctPlayerCount - tPlayerCount) > (Config?.PluginSettings.MaxTeamSizeDifference ?? 1))
-        {
-            PrintDebugMessage("Team sizes are not equal. Balance needed.");
             return true;
         }
 

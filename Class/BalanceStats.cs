@@ -47,7 +47,7 @@ public partial class Mesharsky_TeamBalance
             while (CT.Stats.Count != T.Stats.Count && attempts < maxAttempts)
             {
                 attempts++;
-                
+
                 if (CT.Stats.Count > T.Stats.Count)
                 {
                     var playerToMove = CT.Stats.OrderBy(p => p.PerformanceScore).FirstOrDefault();
@@ -69,12 +69,16 @@ public partial class Mesharsky_TeamBalance
                     }
                 }
 
-                // Check if no meaningful changes are being made, break to avoid infinite loop
-                if (attempts >= maxAttempts)
+                // After each move, re-check the balance to ensure no infinite loop
+                if (Math.Abs(CT.Stats.Count - T.Stats.Count) <= Config?.PluginSettings.MaxTeamSizeDifference)
                 {
-                    PrintDebugMessage("Maximum attempts reached while balancing team sizes. Exiting to prevent infinite loop.");
-                    break;
+                    break; // Exit early if the size difference is now acceptable
                 }
+            }
+
+            if (attempts >= maxAttempts)
+            {
+                PrintDebugMessage("Maximum attempts reached while balancing team sizes. Exiting to prevent infinite loop.");
             }
         }
 
