@@ -28,10 +28,10 @@ public partial class Mesharsky_TeamBalance
 
         player.SwitchTeam(newTeam);
 
-        playerCache.AddOrUpdate(steamId, 
+        playerCache.AddOrUpdate(steamId,
             (key) =>
             {
-                var newPlayer = new Player
+                var newPlayer = new PlayerStats
                 {
                     PlayerName = player.PlayerName,
                     PlayerSteamID = player.SteamID,
@@ -40,7 +40,7 @@ public partial class Mesharsky_TeamBalance
                 };
                 PrintDebugMessage($"Added {newPlayer.PlayerName} to cache with team {newPlayer.Team}");
                 return newPlayer;
-            }, 
+            },
             (key, cachedPlayer) =>
             {
                 cachedPlayer.Team = (int)newTeam;
@@ -49,23 +49,6 @@ public partial class Mesharsky_TeamBalance
             });
 
         return true;
-    }
-
-    private static bool CanMovePlayer(List<Player> fromTeam, List<Player> toTeam, Player player, int currentRound)
-    {
-        if (Math.Abs(fromTeam.Count - 1 - (toTeam.Count + 1)) > Config?.PluginSettings.MaxTeamSizeDifference)
-            return false;
-
-        return true;
-    }
-
-    public static int GetCurrentRound()
-    {
-        var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
-
-        int rounds = gameRules.TotalRoundsPlayed;
-        
-        return rounds;
     }
 
     public static bool IsWarmup()

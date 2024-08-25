@@ -23,18 +23,16 @@ public partial class Mesharsky_TeamBalance
         if (model.TryGetValue("PluginSettings", out var pluginSettingsObj) && pluginSettingsObj is TomlTable pluginTable)
         {
             var minPlayers = int.Parse(pluginTable["minimum_players"]?.ToString() ?? "4");
-            var maxScoreBalanceRatio = float.Parse(pluginTable["score_balance_ratio"]?.ToString() ?? "1.6");
+            var maxScoreBalanceRatio = float.Parse(pluginTable["score_balance_ratio"]?.ToString() ?? "2.0");
             var usePerformanceScore = bool.Parse(pluginTable["use_performance_score"]?.ToString() ?? "true");
             var maxTeamSizeDifference = int.Parse(pluginTable["max_team_size_difference"]?.ToString() ?? "1");
-            var minRoundsBetweenMoves = int.Parse(pluginTable["min_rounds_between_moves"]?.ToString() ?? "2");
 
             var pluginSettings = new PluginSettingsConfig
             {
                 MinPlayers = minPlayers,
                 MaxScoreBalanceRatio = maxScoreBalanceRatio,
                 UsePerformanceScore = usePerformanceScore,
-                MaxTeamSizeDifference = maxTeamSizeDifference,
-                MinRoundsBetweenMoves = minRoundsBetweenMoves
+                MaxTeamSizeDifference = maxTeamSizeDifference
             };
 
             Config = new BalanceConfig
@@ -72,8 +70,8 @@ public partial class Mesharsky_TeamBalance
                     .AppendLine("# For example, if set to 1.6, the balance will trigger if one team's score is")
                     .AppendLine("# 60% higher than the other team's score. Adjust this value based on how strict")
                     .AppendLine("# you want the balancing to be.")
-                    .AppendLine("# Default: 1.6")
-                    .AppendLine("score_balance_ratio = 1.6")
+                    .AppendLine("# Default: 2.0")
+                    .AppendLine("score_balance_ratio = 2.0")
                     .AppendLine()
                     .AppendLine("# Whether to use PerformanceScore for balancing.")
                     .AppendLine("# PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),")
@@ -89,13 +87,7 @@ public partial class Mesharsky_TeamBalance
                     .AppendLine("# of players between the teams is no more than one. This helps prevent one team from")
                     .AppendLine("# having a significant numerical advantage over the other.")
                     .AppendLine("# Default: 1")
-                    .AppendLine("max_team_size_difference = 1")
-                    .AppendLine()
-                    .AppendLine("# The minimum number of rounds that must pass before a player can be moved again.")
-                    .AppendLine("# This setting prevents the same player from being moved back and forth between")
-                    .AppendLine("# teams multiple times in quick succession.")
-                    .AppendLine("# Default: 2")
-                    .AppendLine("min_rounds_between_moves = 2");
+                    .AppendLine("max_team_size_difference = 1");
 
         File.WriteAllText(configPath, defaultConfig.ToString());
 

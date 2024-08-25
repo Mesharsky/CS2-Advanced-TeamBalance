@@ -7,7 +7,7 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    private static readonly ConcurrentDictionary<ulong, Player> playerCache = new();
+    private static readonly ConcurrentDictionary<ulong, PlayerStats> playerCache = new();
 
     public static void UpdatePlayerTeamsInCache()
     {
@@ -24,11 +24,15 @@ public partial class Mesharsky_TeamBalance
             }
             else
             {
-                var newPlayer = new Player
+                var newPlayer = new PlayerStats
                 {
                     PlayerName = player.PlayerName,
                     PlayerSteamID = player.SteamID,
                     Team = (int)player.Team,
+                    Kills = player.ActionTrackingServices!.MatchStats.Kills,
+                    Assists = player.ActionTrackingServices!.MatchStats.Assists,
+                    Deaths = player.ActionTrackingServices.MatchStats.Deaths,
+                    Damage = player.ActionTrackingServices.MatchStats.Damage,
                     Score = player.Score
                 };
 
@@ -37,11 +41,11 @@ public partial class Mesharsky_TeamBalance
         }
     }
 
-    public static List<Player> GetPlayersForRebalance()
+    public static List<PlayerStats> GetPlayersForRebalance()
     {
         var players = playerCache.Values
             .Where(p => p.Team == (int)CsTeam.CounterTerrorist || p.Team == (int)CsTeam.Terrorist)
-            .OrderByDescending(p => Config?.PluginSettings.UsePerformanceScore == true ? p.PerformanceScore : p.Score)
+            .OrderByDescending(p => p.PerformanceScore)
             .ToList();
 
         PrintDebugMessage($"Total valid players for rebalance: {players.Count}");

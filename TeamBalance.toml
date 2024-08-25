@@ -15,7 +15,7 @@ minimum_players = 4
 # 60% higher than the other team's score. Adjust this value based on how strict
 # you want the balancing to be.
 # Default: 1.6
-score_balance_ratio = 1.6
+score_balance_ratio = 2.0
 
 # Whether to use PerformanceScore for balancing.
 # PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),
@@ -32,9 +32,3 @@ use_performance_score = true
 # having a significant numerical advantage over the other.
 # Default: 1
 max_team_size_difference = 1
-
-# The minimum number of rounds that must pass before a player can be moved again.
-# This setting prevents the same player from being moved back and forth between
-# teams multiple times in quick succession.
-# Default: 2
-min_rounds_between_moves = 2

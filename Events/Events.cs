@@ -17,14 +17,6 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
-        if (GlobalBalanceMade)
-        {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced.");
-        }
-        else
-        {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
-        }
         if (!IsWarmup())
             return HookResult.Continue;
 
@@ -72,6 +64,12 @@ public partial class Mesharsky_TeamBalance
 
         var allPlayers = Utilities.GetPlayers();
 
+        if (allPlayers == null)
+        {
+            PrintDebugMessage("No players found.");
+            return;
+        }
+
         foreach (var player in allPlayers.Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected))
         {
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
@@ -84,7 +82,7 @@ public partial class Mesharsky_TeamBalance
             }
             else
             {
-                var newPlayer = new Player
+                var newPlayer = new PlayerStats
                 {
                     PlayerName = player.PlayerName,
                     PlayerSteamID = player.SteamID,
@@ -150,7 +148,7 @@ public partial class Mesharsky_TeamBalance
         return info.ArgCount > startIndex && int.TryParse(info.ArgByIndex(startIndex), out int teamId) ? teamId : -1;
     }
 
-    private static bool CanSwitchTeams(Player cachedPlayer, int newTeamId)
+    private static bool CanSwitchTeams(PlayerStats cachedPlayer, int newTeamId)
     {
         int ctPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.CounterTerrorist);
         int tPlayerCount = playerCache.Values.Count(p => p.Team == (int)CsTeam.Terrorist);
@@ -160,7 +158,7 @@ public partial class Mesharsky_TeamBalance
         return Math.Abs(ctPlayerCount - tPlayerCount) <= Config?.PluginSettings.MaxTeamSizeDifference;
     }
 
-    private static void AdjustPlayerCountForSwitch(Player cachedPlayer, int newTeamId, ref int ctPlayerCount, ref int tPlayerCount)
+    private static void AdjustPlayerCountForSwitch(PlayerStats cachedPlayer, int newTeamId, ref int ctPlayerCount, ref int tPlayerCount)
     {
         if (cachedPlayer.Team == (int)CsTeam.CounterTerrorist)
             ctPlayerCount--;
@@ -173,7 +171,7 @@ public partial class Mesharsky_TeamBalance
             tPlayerCount++;
     }
 
-    private static void UpdateTeamAssignment(Player cachedPlayer, int newTeamId)
+    private static void UpdateTeamAssignment(PlayerStats cachedPlayer, int newTeamId)
     {
         cachedPlayer.Team = newTeamId;
         PrintDebugMessage($"Player {cachedPlayer.PlayerName} updated to team {newTeamId} in cache.");
