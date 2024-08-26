@@ -74,8 +74,9 @@ public partial class Mesharsky_TeamBalance
             PlayerStats? bestTPlayer = T.Stats.OrderBy(p => p.PerformanceScore).FirstOrDefault();
             float bestNewDiff = currentDiff;
 
-            if (bestTPlayer == null)
+            if (bestTPlayer == null || CT.Stats.Count == 0)
             {
+                PrintDebugMessage("No valid players for swapping.");
                 return null;
             }
 
