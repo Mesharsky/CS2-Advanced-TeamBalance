@@ -41,26 +41,39 @@ public partial class Mesharsky_TeamBalance
 
         public void MoveLowestScorersFromBiggerTeam()
         {
-            while (CT.Stats.Count != T.Stats.Count)
+            int ctPlayerCount = CT.Stats.Count;
+            int tPlayerCount = T.Stats.Count;
+
+            // Determine which team has more players and how many need to be moved
+            int playersToMove = Math.Abs(ctPlayerCount - tPlayerCount) / 2;
+
+            if (playersToMove == 0)
             {
-                if (CT.Stats.Count > T.Stats.Count)
-                {
-                    var playerToMove = CT.Stats.OrderBy(p => p.PerformanceScore).FirstOrDefault();
-                    if (playerToMove != null)
-                    {
-                        T.AddPlayer(playerToMove);
-                        CT.RemovePlayer(playerToMove);
-                    }
-                }
-                else if (T.Stats.Count > CT.Stats.Count)
-                {
-                    var playerToMove = T.Stats.OrderBy(p => p.PerformanceScore).FirstOrDefault();
-                    if (playerToMove != null)
-                    {
-                        CT.AddPlayer(playerToMove);
-                        T.RemovePlayer(playerToMove);
-                    }
-                }
+                PrintDebugMessage("Teams are already balanced by size. No need to move players.");
+                return;
+            }
+
+            // Move players from the bigger team to the smaller team
+            if (ctPlayerCount > tPlayerCount)
+            {
+                MovePlayers(CT, T, playersToMove);
+            }
+            else if (tPlayerCount > ctPlayerCount)
+            {
+                MovePlayers(T, CT, playersToMove);
+            }
+
+            PrintDebugMessage($"Players moved to balance team sizes. CT Players: {CT.Stats.Count}, T Players: {T.Stats.Count}");
+        }
+
+        private static void MovePlayers(TeamStats fromTeam, TeamStats toTeam, int playersToMove)
+        {
+            var playersToMoveList = fromTeam.Stats.OrderBy(p => p.PerformanceScore).Take(playersToMove).ToList();
+
+            foreach (var player in playersToMoveList)
+            {
+                fromTeam.RemovePlayer(player);
+                toTeam.AddPlayer(player);
             }
         }
 
@@ -127,21 +140,37 @@ public partial class Mesharsky_TeamBalance
 
             CT.AddPlayer(tPlayer);
             T.AddPlayer(ctPlayer);
+
+            PrintDebugMessage($"Swapped CT player {ctPlayer.PlayerName} with T player {tPlayer.PlayerName}");
         }
 
         public void AssignPlayerTeams()
         {
             foreach (var player in CT.Stats)
             {
+                if (player == null)
+                {
+                    PrintDebugMessage("Found null player in CT stats, skipping.");
+                    continue;
+                }
+
                 if (player.Team != (int)CsTeam.CounterTerrorist)
                     ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
             }
 
             foreach (var player in T.Stats)
             {
+                if (player == null)
+                {
+                    PrintDebugMessage("Found null player in T stats, skipping.");
+                    continue;
+                }
+
                 if (player.Team != (int)CsTeam.Terrorist)
                     ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
             }
+
+            PrintDebugMessage("Player team assignments completed.");
         }
     }
 }

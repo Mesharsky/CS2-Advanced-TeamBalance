@@ -6,7 +6,7 @@ namespace Mesharsky_TeamBalance;
 public partial class Mesharsky_TeamBalance : BasePlugin
 {
     public override string ModuleName => "Mesharsky Team Balance";
-    public override string ModuleVersion => "2.1";
+    public override string ModuleVersion => "2.1.1";
     public override string ModuleAuthor => "Mesharsky";
 
     public override void Load(bool hotReload)
@@ -15,7 +15,7 @@ public partial class Mesharsky_TeamBalance : BasePlugin
         Initialize_Events();
         AddCommandListener("jointeam", Command_JoinTeam);
 
-        AddTimer(7.0f, () =>
+        AddTimer(5.0f, () =>
         {
             string conVarName = "mp_autoteambalance";
             ConVar? cvar = ConVar.Find(conVarName);

@@ -48,6 +48,7 @@ public partial class Mesharsky_TeamBalance
     public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
         UpdatePlayerStatsInCache();
+        
         var endTime = ConVar.Find("mp_round_restart_delay")?.GetPrimitiveValue<float>();
         var delay = endTime == null ? 1 : (endTime - 1);
 
