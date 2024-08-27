@@ -1,5 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Cvars;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Mesharsky_TeamBalance;
@@ -8,7 +10,18 @@ public partial class Mesharsky_TeamBalance
 {
     private static void PrintDebugMessage(string message)
     {
-        Console.WriteLine($"[Team Balance] {message}");
+        if (Config?.PluginSettings.EnableDebugMessages == true)
+        {
+            Console.WriteLine($"[Team Balance] {message}");
+        }
+    }
+
+    private static void PrintToChatAllMsg(string message)
+    {
+        if (Config?.PluginSettings.EnableChatMessages == true)
+        {
+            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance]{ChatColors.Default} {message}");
+        }
     }
 
     private static bool ChangePlayerTeam(ulong steamId, CsTeam newTeam)
@@ -55,5 +68,15 @@ public partial class Mesharsky_TeamBalance
     {
         return Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!
             .WarmupPeriod;
+    }
+
+    public static bool IsHalftime()
+    {
+        var gamerules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules;
+        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+
+        if (gamerules == null) return false;
+        return gamerules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gamerules.TotalRoundsPlayed) || gamerules.GameRestart;
     }
 }

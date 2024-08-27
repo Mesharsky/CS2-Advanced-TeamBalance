@@ -9,6 +9,27 @@ public partial class Mesharsky_TeamBalance
         public TeamStats CT { get; set; } = new TeamStats();
         public TeamStats T { get; set; } = new TeamStats();
 
+        public int CTWinStreak { get; private set; } = 0;
+        public int TWinStreak { get; private set; } = 0;
+        public int RoundCount { get; private set; } = 0;
+        public bool WasLastActionScramble { get; private set; } = false;
+
+        public void UpdateStreaks(bool ctWin)
+        {
+            if (ctWin)
+            {
+                CTWinStreak++;
+                TWinStreak = 0;
+            }
+            else
+            {
+                TWinStreak++;
+                CTWinStreak = 0;
+            }
+
+            RoundCount++;
+        }
+
         public void GetStats(List<PlayerStats> allPlayers)
         {
             if (allPlayers == null || allPlayers.Count == 0)
@@ -171,6 +192,42 @@ public partial class Mesharsky_TeamBalance
             }
 
             PrintDebugMessage("Player team assignments completed.");
+        }
+
+        public bool ShouldScrambleTeams()
+        {
+            if (Config?.PluginSettings.ScrambleMode == "none")
+            {
+                WasLastActionScramble = false;
+                return false;
+            }
+
+            if (Config?.PluginSettings.ScrambleMode == "round" && RoundCount >= Config.PluginSettings.RoundScrambleInterval)
+            {
+                PrintDebugMessage("Scrambling teams due to round interval.");
+                RoundCount = 0;
+                WasLastActionScramble = true;
+                return true;
+            }
+
+            if (Config?.PluginSettings.ScrambleMode == "winstreak" && (CTWinStreak >= Config.PluginSettings.WinstreakScrambleThreshold || TWinStreak >= Config.PluginSettings.WinstreakScrambleThreshold))
+            {
+                PrintDebugMessage("Scrambling teams due to win streak.");
+                CTWinStreak = 0;
+                TWinStreak = 0;
+                WasLastActionScramble = true;
+                return true;
+            }
+
+            if (Config?.PluginSettings.ScrambleMode == "halftime" && Config.PluginSettings.HalftimeScrambleEnabled && IsHalftime())
+            {
+                PrintDebugMessage("Scrambling teams due to halftime.");
+                WasLastActionScramble = true;
+                return true;
+            }
+
+            WasLastActionScramble = false;
+            return false;
         }
     }
 }

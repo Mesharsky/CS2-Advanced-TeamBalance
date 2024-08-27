@@ -26,14 +26,29 @@ public partial class Mesharsky_TeamBalance
             var maxScoreBalanceRatio = float.Parse(pluginTable["score_balance_ratio"]?.ToString() ?? "2.0");
             var usePerformanceScore = bool.Parse(pluginTable["use_performance_score"]?.ToString() ?? "true");
             var maxTeamSizeDifference = int.Parse(pluginTable["max_team_size_difference"]?.ToString() ?? "1");
+            var enableDebugMessages = bool.Parse(pluginTable["enable_debug_messages"]?.ToString() ?? "true");
+            var enableChatMessages = bool.Parse(pluginTable["enable_chat_messages"]?.ToString() ?? "true");
+            var scrambleMode = pluginTable["scramble_mode"]?.ToString() ?? "none";
+            var roundScrambleInterval = int.Parse(pluginTable["round_scramble_interval"]?.ToString() ?? "5");
+            var winstreakScrambleThreshold = int.Parse(pluginTable["winstreak_scramble_threshold"]?.ToString() ?? "3");
+            var halftimeScrambleEnabled = bool.Parse(pluginTable["halftime_scramble_enabled"]?.ToString() ?? "false");
 
             var pluginSettings = new PluginSettingsConfig
             {
                 MinPlayers = minPlayers,
                 MaxScoreBalanceRatio = maxScoreBalanceRatio,
                 UsePerformanceScore = usePerformanceScore,
-                MaxTeamSizeDifference = maxTeamSizeDifference
+                MaxTeamSizeDifference = maxTeamSizeDifference,
+                EnableDebugMessages = enableDebugMessages,
+                EnableChatMessages = enableChatMessages,
+                ScrambleMode = scrambleMode,
+                RoundScrambleInterval = roundScrambleInterval,
+                WinstreakScrambleThreshold = winstreakScrambleThreshold,
+                HalftimeScrambleEnabled = halftimeScrambleEnabled
             };
+
+            // Validate settings after loading
+            pluginSettings.ValidateSettings();
 
             Config = new BalanceConfig
             {
@@ -47,6 +62,7 @@ public partial class Mesharsky_TeamBalance
             PrintDebugMessage("'PluginSettings' section is missing in the configuration file.");
         }
     }
+
 
     private static void GenerateDefaultConfigFile(string configPath)
     {
@@ -87,7 +103,37 @@ public partial class Mesharsky_TeamBalance
                     .AppendLine("# of players between the teams is no more than one. This helps prevent one team from")
                     .AppendLine("# having a significant numerical advantage over the other.")
                     .AppendLine("# Default: 1")
-                    .AppendLine("max_team_size_difference = 1");
+                    .AppendLine("max_team_size_difference = 1")
+                    .AppendLine()
+                    .AppendLine("# Enable or disable debug messages.")
+                    .AppendLine("# If set to true, the plugin will print debug messages to the console.")
+                    .AppendLine("# Default: true")
+                    .AppendLine("enable_debug_messages = true")
+                    .AppendLine()
+                    .AppendLine("# Enable or disable chat messages.")
+                    .AppendLine("# If set to true, the plugin will print messages to the chat.")
+                    .AppendLine("# Default: true")
+                    .AppendLine("enable_chat_messages = true")
+                    .AppendLine()
+                    .AppendLine("# Scramble Mode Configuration")
+                    .AppendLine("# scramble_mode determines the type of scrambling behavior.")
+                    .AppendLine("# Options: \"none\" (no scrambling), \"round\" (scramble teams every X rounds),")
+                    .AppendLine("# \"winstreak\" (scramble if a team wins X rounds in a row), \"halftime\" (scramble at halftime).")
+                    .AppendLine("# Default: \"none\"")
+                    .AppendLine("scramble_mode = \"none\"")
+                    .AppendLine()
+                    .AppendLine("# Number of rounds after which teams should be scrambled (used if scramble_mode is \"round\").")
+                    .AppendLine("# Default: 5")
+                    .AppendLine("round_scramble_interval = 5")
+                    .AppendLine()
+                    .AppendLine("# Number of consecutive wins required to trigger a scramble (used if scramble_mode is \"winstreak\").")
+                    .AppendLine("# Default: 3")
+                    .AppendLine("winstreak_scramble_threshold = 3")
+                    .AppendLine()
+                    .AppendLine("# Enable or disable halftime scrambling.")
+                    .AppendLine("# If set to true and scramble_mode is \"halftime\", teams will be scrambled at halftime.")
+                    .AppendLine("# Default: false")
+                    .AppendLine("halftime_scramble_enabled = false");
 
         File.WriteAllText(configPath, defaultConfig.ToString());
 

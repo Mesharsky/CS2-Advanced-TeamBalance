@@ -1,4 +1,4 @@
-# Mesharsky Team Balance Plugin
+# Mesharsky Team Balance Plugin + Scramble Mode Support
 
 This plugin is designed to ensure fair and balanced gameplay by intelligently managing team sizes and performance metrics. It's highly configurable to suit the needs of any server.
 
@@ -8,6 +8,7 @@ This plugin is designed to ensure fair and balanced gameplay by intelligently ma
 - **Configurable Settings**: Fine-tune the balancing behavior with various configuration options.
 - **Performance-Based**: Optionally use a custom `PerformanceScore` to evaluate players and create fairer teams.
 - **Team Size Control**: Ensures the difference in team sizes is kept to a minimum.
+- **Scramble Mode**: Supports scramble modes, with multiple configuration options.
 
 ## Installation
 
@@ -37,8 +38,8 @@ minimum_players = 4
 # For example, if set to 1.6, the balance will trigger if one team's score is
 # 60% higher than the other team's score. Adjust this value based on how strict
 # you want the balancing to be.
-# Default: 1.6
-score_balance_ratio = 1.6
+# Default: 2.0
+score_balance_ratio = 2.0
 
 # Whether to use PerformanceScore for balancing.
 # PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),
@@ -56,11 +57,40 @@ use_performance_score = true
 # Default: 1
 max_team_size_difference = 1
 
-# The minimum number of rounds that must pass before a player can be moved again.
-# This setting prevents the same player from being moved back and forth between
-# teams multiple times in quick succession.
-# Default: 2
-min_rounds_between_moves = 2
+# Enable or disable debug messages.
+# If set to true, the plugin will print debug messages to the console.
+# Default: true
+enable_debug_messages = true
+
+# Enable or disable chat messages.
+# If set to true, the plugin will print messages to the chat.
+# Default: true
+enable_chat_messages = true
+
+# Scramble Mode Configuration
+# scramble_mode determines the type of scrambling behavior.
+# Options: 
+# 
+# "none" (no scrambling)
+# "round" (scramble teams every X rounds),
+# "winstreak" (scramble if a team wins X rounds in a row)
+# "halftime" (scramble at halftime).
+#
+# Default: "none"
+scramble_mode = "none"
+
+# Number of rounds after which teams should be scrambled (used if scramble_mode is "round").
+# Default: 5
+round_scramble_interval = 5
+
+# Number of consecutive wins required to trigger a scramble (used if scramble_mode is "winstreak").
+# Default: 3
+winstreak_scramble_threshold = 3
+
+# Enable or disable halftime scrambling.
+# If set to true and scramble_mode is "halftime", teams will be scrambled at halftime.
+# Default: false
+halftime_scramble_enabled = false
 ```
 ## Key Settings Explained
 
@@ -72,6 +102,8 @@ min_rounds_between_moves = 2
 
 - **`max_team_size_difference`**: Ensures that the team sizes differ by no more than this value after balancing, helping to prevent one team from having a significant player advantage.
 
+- **`scramble_mode`**: Allows to automatically scramble teams based on the conditions set.
+
 ## How It Works
 
 1. **Player Stats Collection**: At the start of each round, the plugin collects stats for each player (Kills, Deaths, Damage, Score) and stores them in a cache.
@@ -79,7 +111,7 @@ min_rounds_between_moves = 2
 2. **Balance Check**: The plugin checks whether teams need to be rebalanced based on player count and score ratios.
 
 3. **Team Balancing**:
-   - If balancing is required, players are evaluated based on their `PerformanceScore` (or in-game score if `use_performance_score` is disabled).
+   - If balancing is required, players are evaluated based on their `PerformanceScore` (or just team size if `use_performance_score` is disabled).
    - The plugin attempts to distribute players between teams to minimize the score difference while respecting the `max_team_size_difference`.
    - Only players who need to be moved are affected; those already on the correct team are left in place.
 

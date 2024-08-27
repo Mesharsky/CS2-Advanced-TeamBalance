@@ -14,7 +14,7 @@ minimum_players = 4
 # For example, if set to 1.6, the balance will trigger if one team's score is
 # 60% higher than the other team's score. Adjust this value based on how strict
 # you want the balancing to be.
-# Default: 1.6
+# Default: 2.0
 score_balance_ratio = 2.0
 
 # Whether to use PerformanceScore for balancing.
@@ -32,3 +32,38 @@ use_performance_score = true
 # having a significant numerical advantage over the other.
 # Default: 1
 max_team_size_difference = 1
+
+# Enable or disable debug messages.
+# If set to true, the plugin will print debug messages to the console.
+# Default: true
+enable_debug_messages = true
+
+# Enable or disable chat messages.
+# If set to true, the plugin will print messages to the chat.
+# Default: true
+enable_chat_messages = true
+
+# Scramble Mode Configuration
+# scramble_mode determines the type of scrambling behavior.
+# Options: 
+# 
+# "none" (no scrambling)
+# "round" (scramble teams every X rounds),
+# "winstreak" (scramble if a team wins X rounds in a row)
+# "halftime" (scramble at halftime).
+#
+# Default: "none"
+scramble_mode = "none"
+
+# Number of rounds after which teams should be scrambled (used if scramble_mode is "round").
+# Default: 5
+round_scramble_interval = 5
+
+# Number of consecutive wins required to trigger a scramble (used if scramble_mode is "winstreak").
+# Default: 3
+winstreak_scramble_threshold = 3
+
+# Enable or disable halftime scrambling.
+# If set to true and scramble_mode is "halftime", teams will be scrambled at halftime.
+# Default: false
+halftime_scramble_enabled = false

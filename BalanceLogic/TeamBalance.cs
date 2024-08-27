@@ -28,9 +28,15 @@ public partial class Mesharsky_TeamBalance
         GlobalBalanceMade = balanceMade;
     }
 
-    private static bool ShouldTeamsBeRebalanced()
+    private bool ShouldTeamsBeRebalanced()
     {
-        PrintDebugMessage("Evaluating if teams need to be rebalanced...");
+        PrintDebugMessage("Evaluating if teams need to be rebalanced or scrambled...");
+
+        if (balanceStats.ShouldScrambleTeams())
+        {
+            PrintDebugMessage("Teams should be scrambled.");
+            return true;
+        }
 
         UpdatePlayerTeamsInCache();
 

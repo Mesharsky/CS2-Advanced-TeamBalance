@@ -24,13 +24,18 @@ public partial class Mesharsky_TeamBalance
             var ctTotalScore = balanceStats.CT.TotalPerformanceScore;
             var tTotalScore = balanceStats.T.TotalPerformanceScore;
 
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}Teams have been balanced.");
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] CT: {ctPlayerCount} players, {ctTotalScore} score");
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] T: {tPlayerCount} players, {tTotalScore} score.");
+            if (balanceStats.WasLastActionScramble)
+            {
+                PrintToChatAllMsg("Teams have been scrambled.");
+            }
+            else
+            {
+                PrintToChatAllMsg("Teams have been balanced.");
+            }
         }
         else
         {
-            Server.PrintToChatAll($" {ChatColors.Red}[Team Balance] {ChatColors.Default}No need for team balance at this moment.");
+            PrintToChatAllMsg("No need for team balance at this moment.");
         }
 
         if (!IsWarmup())
@@ -39,6 +44,7 @@ public partial class Mesharsky_TeamBalance
         var endTime = ConVar.Find("mp_warmuptime")?.GetPrimitiveValue<float>();
         var delay = endTime == null ? 1 : (endTime - 1);
 
+        // Always attempt to balance teams, even during warmup
         AddTimer((float)delay, AttemptBalanceTeams);
 
         return HookResult.Continue;
@@ -48,7 +54,11 @@ public partial class Mesharsky_TeamBalance
     public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
         UpdatePlayerStatsInCache();
-        
+
+        // Update win streaks based on the winner
+        bool ctWin = @event.Winner == (int)CsTeam.CounterTerrorist;
+        balanceStats.UpdateStreaks(ctWin);
+
         var endTime = ConVar.Find("mp_round_restart_delay")?.GetPrimitiveValue<float>();
         var delay = endTime == null ? 1 : (endTime - 1);
 
