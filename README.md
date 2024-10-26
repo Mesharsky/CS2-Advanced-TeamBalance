@@ -1,136 +1,227 @@
-# Mesharsky Team Balance Plugin + Scramble Mode Support
+# Mesharsky Advanced Team Balance Plugin
 
-This plugin is designed to ensure fair and balanced gameplay by intelligently managing team sizes and performance metrics. It's highly configurable to suit the needs of any server.
+![Plugin Version](https://img.shields.io/badge/Plugin%20Version-3.0.0-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Supported Languages](https://img.shields.io/badge/Supported%20Languages-7-brightgreen)
 
-## Features
+Comprehensive solution designed to ensure fair and balanced gameplay on your CS2 Server. This plugin intelligently manages team sizes and player performance metrics to create a more competitive and enjoyable experience for all players.
 
-- **Intelligent Team Balancing**: Automatically balances teams based on player performance metrics (Kills, Deaths, Damage, and Score).
-- **Configurable Settings**: Fine-tune the balancing behavior with various configuration options.
-- **Performance-Based**: Optionally use a custom `PerformanceScore` to evaluate players and create fairer teams.
-- **Team Size Control**: Ensures the difference in team sizes is kept to a minimum.
-- **Scramble Mode**: Supports scramble modes, with multiple configuration options.
+## 🚀 Features
 
-## Installation
+- **Intelligent Team Balancing**
+  - Automatically balances teams based on player performance metrics (Kills, Deaths, Damage, KDA and Score).
+  - Uses a custom `PerformanceScore` for more accurate balancing. (Can be disabled)
+- **Configurable Settings**
+  - Highly customizable via the configuration file.
+  - Control team size differences, balancing thresholds, and more.
+- **Scramble Mode Support**
+  - Multiple scramble modes available: none, round-based, win streak, and halftime.
+- **Halftime and Overtime Checks**
+  - Additional support for halftime and overtime scenarios to prevent unfair advantages.
+- **Spawn Correction**
+  - Precisely checks player team and position on spawn.
+  - Automatically teleports players to the correct spawn point if they spawn in the wrong location.
+- **Translations**
+  - Now supports multiple languages:
+    - English
+    - Polish
+    - Spanish
+    - Russian
+    - French
+    - Turkish
+    - German
 
-1. **Download the Plugin**: Download from releases tab directly: [Advanced-TeamBalance Releases](https://github.com/Mesharsky/Advanced-TeamBalance/releases)
-2. **Upload plugin to your CounterStrikeSharp folder**: Place the plugin folder inside the CounterStrikeSharp folder. Standard installation.
-3. **Configure the Plugin**: Edit the `TeamBalance.toml` file to adjust the settings according to your server's needs (see below for details).
-4. **Restart Your Server**: Restart the server to load the plugin with your customized settings.
+## 📥 Installation
 
-## Configuration
+1. **Download the Plugin**
+   - Get the latest release from the [Releases Page](https://github.com/Mesharsky/Advanced-TeamBalance/releases).
+2. **Upload to Your Server**
+   - Place the plugin folder inside your `CounterStrikeSharp` directory.
+3. **Configure the Plugin**
+   - Edit the `TeamBalance.toml` file located in the module directory to adjust settings as needed.
+4. **Restart Your Server**
+   - Restart the server to load the plugin with your customized settings.
 
-The plugin comes with a configuration file, `TeamBalance.toml`, that allows you to customize its behavior. Below is a detailed explanation of each setting. (Configuration file is inside the Module Directory)
+---
 
-```toml
+**Note:** Please replace your old configuration file with the new one provided in latest release
+
+---
+
+## ⚙️ Configuration
+
+```
 # Plugin Author - Mesharsky
 # https://csowicze.pl/
 
 # Team Balance Plugin Configuration
-# Make sure to adjust these settings according to your server's needs.
+# Adjust these settings according to your server's needs.
 
 [PluginSettings]
-# The minimum number of players required on the server before the team balance
-# feature activates. This prevents balancing when there are too few players.
+
+# Plugin's chat tag for messages in chat.
+# Supported colors:
+# [white], [darkred], [green], [lightyellow], [lightblue], [olive], [lime],
+# [red], [lightpurple], [purple], [grey], [yellow], [gold], [silver], [blue],
+# [darkblue], [bluegrey], [magenta], [lightred], [orange]
+plugin_chat_tag = " [red][TeamBalance]"
+
+# Minimum number of players required on the server before team balance activates.
+# Prevents balancing when there are too few players.
 # Default: 4
 minimum_players = 4
 
-# The maximum allowed ratio of scores between teams before triggering a balance.
-# For example, if set to 1.6, the balance will trigger if one team's score is
-# 60% higher than the other team's score. Adjust this value based on how strict
-# you want the balancing to be.
+# Maximum allowed score ratio between teams before triggering a balance.
+# For example, if set to 2.0, balancing will trigger if one team's score
+# is 2 times greater than the other team's score.
 # Default: 2.0
 score_balance_ratio = 2.0
 
-# Whether to use PerformanceScore for balancing.
-# PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),
-# damage dealt, and the in-game score to evaluate a player's overall performance.
-# If set to true, the balance algorithm will use PerformanceScore to evaluate 
-# players when balancing teams, rather than just the in-game score.
+# Use PerformanceScore for balancing.
+# PerformanceScore takes into account KDA (Kills, Deaths, Assists),
+# damage dealt, and the in-game score to evaluate player performance.
 # Default: true
 use_performance_score = true
 
-# Maximum allowed difference in team sizes.
-# This setting controls how much the team sizes are allowed to differ after balancing.
-# If set to 1, the algorithm will attempt to ensure that the difference in the number 
-# of players between the teams is no more than one. This helps prevent one team from
-# having a significant numerical advantage over the other.
+# Maximum allowed difference in team sizes after balancing.
+# If set to 1, the teams will be balanced such that one team cannot have
+# more than one extra player compared to the other.
 # Default: 1
 max_team_size_difference = 1
 
 # Enable or disable debug messages.
-# If set to true, the plugin will print debug messages to the console.
+# If true, debug messages will be printed to the server console.
 # Default: true
 enable_debug_messages = true
 
 # Enable or disable chat messages.
-# If set to true, the plugin will print messages to the chat.
+# If true, messages will be sent to the chat.
 # Default: true
 enable_chat_messages = true
 
 # Scramble Mode Configuration
-# scramble_mode determines the type of scrambling behavior.
-# Options: 
-# 
-# "none" (no scrambling)
-# "round" (scramble teams every X rounds),
-# "winstreak" (scramble if a team wins X rounds in a row)
+# scramble_mode determines when and how teams are scrambled.
+# Options: "none" (no scrambling), "round" (scramble every X rounds),
+# "winstreak" (scramble after a team wins X rounds in a row),
 # "halftime" (scramble at halftime).
-#
 # Default: "none"
 scramble_mode = "none"
 
-# Number of rounds after which teams should be scrambled (used if scramble_mode is "round").
+# Number of rounds after which teams should be scrambled (if scramble_mode is "round").
 # Default: 5
 round_scramble_interval = 5
 
-# Number of consecutive wins required to trigger a scramble (used if scramble_mode is "winstreak").
+# Number of consecutive wins to trigger a scramble (if scramble_mode is "winstreak").
 # Default: 3
 winstreak_scramble_threshold = 3
 
-# Enable or disable halftime scrambling.
-# If set to true and scramble_mode is "halftime", teams will be scrambled at halftime.
+# Enable or disable halftime scrambling (if scramble_mode is "halftime").
 # Default: false
 halftime_scramble_enabled = false
 ```
-## Key Settings Explained
 
-- **`minimum_players`**: The minimum number of players required before the plugin activates. This ensures that balancing doesn't occur when there are too few players to make meaningful adjustments.
+### Key Settings Explained
 
-- **`score_balance_ratio`**: Controls the ratio of scores between teams that will trigger a rebalance. For example, a ratio of 1.6 means that if one team’s score is 60% higher than the other’s, a balance will be triggered.
+- **`minimum_players`**
+  - Ensures balancing doesn't occur when there are too few players.
+- **`score_balance_ratio`**
+  - Triggers a rebalance if one team's score exceeds the other's by this ratio.
+- **`use_performance_score`**
+  - Uses a custom metric for more effective balancing.
+- **`max_team_size_difference`**
+  - Prevents significant numerical advantages by limiting team size differences.
+- **`plugin_chat_tag`**
+  - Customize the in-game chat tag for plugin messages with color support.
+- **`scramble_mode`**
+  - Automatically scramble teams based on specified conditions.
 
-- **`use_performance_score`**: When enabled, the plugin uses a custom `PerformanceScore` metric (based on KDA, damage, and score) to determine player value during balancing. This typically results in more effective balancing than using the in-game score alone.
+---
 
-- **`max_team_size_difference`**: Ensures that the team sizes differ by no more than this value after balancing, helping to prevent one team from having a significant player advantage.
+## 🌐 Translations
 
-- **`scramble_mode`**: Allows to automatically scramble teams based on the conditions set.
+The plugin now supports multiple languages for in-game messages:
 
-## How It Works
+- **English**
+- **Polish**
+- **Spanish**
+- **Russian**
+- **French**
+- **Turkish**
+- **German**
 
-1. **Player Stats Collection**: At the start of each round, the plugin collects stats for each player (Kills, Deaths, Damage, Score) and stores them in a cache.
+---
 
-2. **Balance Check**: The plugin checks whether teams need to be rebalanced based on player count and score ratios.
+## 🛠 How It Works
 
-3. **Team Balancing**:
-   - If balancing is required, players are evaluated based on their `PerformanceScore` (or just team size if `use_performance_score` is disabled).
-   - The plugin attempts to distribute players between teams to minimize the score difference while respecting the `max_team_size_difference`.
-   - Only players who need to be moved are affected; those already on the correct team are left in place.
+1. **Player Stats Collection**
+   - Collects stats (Kills, Deaths, Damage, Score) and stores them in a cache.
+2. **Balance Check**
+   - Evaluates whether teams need rebalancing based on team sizes and score ratios.
+3. **Team Balancing**
+   - Distributes players to minimize score differences while respecting team size limits.
+   - Moves only the necessary players to achieve balance.
+4. **Spawn Correction**
+   - Checks player positions on spawn.
+   - Teleports players to the correct spawn point if they are in the wrong location.
+5. **Feedback**
+   - Notifies players via in-game chat when a balance or scramble occurs.
 
-4. **Feedback**: If a balance is made, players are notified via in-game chat, ensuring transparency.
+---
 
-## Example Scenarios
+## 📊 Example Scenarios
 
 ### Scenario 1: Uneven Team Sizes
-- **Input**: 10 players on the Terrorist team, 1 player on the Counter-Terrorist team.
-- **Result**: The plugin will move players from the Terrorist team to the Counter-Terrorist team until the difference in team sizes is within the allowed range (defined by `max_team_size_difference`).
+
+- **Situation:** 10 players on Terrorists, 1 player on Counter-Terrorists.
+- **Action:** The plugin moves players from Terrorists to Counter-Terrorists until team sizes are balanced according to `max_team_size_difference`.
 
 ### Scenario 2: High Score Disparity
-- **Input**: Terrorist team has a score that is 70% higher than the Counter-Terrorist team.
-- **Result**: The plugin will trigger a rebalance, moving top-performing players from the Terrorist team to the Counter-Terrorist team to even out the scores.
 
-## Development
+- **Situation:** Terrorists have a score 70% higher than Counter-Terrorists.
+- **Action:** The plugin rebalances teams by moving top-performing players to even out the scores.
 
-This plugin was developed by Mesharsky. Contributions, issues, and suggestions are welcome! Feel free to open a pull request or issue on GitHub.
+---
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and suggestions are welcome! Feel free to open a pull request or issue on [GitHub](https://github.com/Mesharsky/Advanced-TeamBalance).
+
+---
+
+## 📞 Support
+
+Support is available via [GitHub issue reports](https://github.com/Mesharsky/Advanced-TeamBalance/issues). Please open an issue for any questions, bug reports, or feature requests.
+
+---
+
+## 🔗 Quick Links
+
+- [Download Latest Release](https://github.com/Mesharsky/Advanced-TeamBalance/releases/latest)
+- [Report an Issue](https://github.com/Mesharsky/Advanced-TeamBalance/issues)
+- [Contribute on GitHub](https://github.com/Mesharsky/Advanced-TeamBalance)
+
+---
+
+## ✨ Features Coming Soon
+
+- Additional language support.
+- More customization options.
+- Enhanced performance metrics.
+
+---
+
+## 🤖 Compatibility
+
+- **Counter-Strike Version:** *(Minimum: v282)*
+
+---
+
+## 💰Support / Donations
+
+- **PayPal** You can support me via PayPal, [Donate](https://paypal.me/mesharskyh2k)
