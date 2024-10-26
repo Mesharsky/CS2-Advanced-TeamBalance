@@ -175,7 +175,6 @@ public partial class Mesharsky_TeamBalance
         {
             PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
 
-            player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} nie możesz przejść do tej drużyny ponieważ rozgrywka będzie nierówna.");
             player.PrintToChat(ReplaceColorPlaceholders(string.Format(Localizer["teams.join.block"], Config?.PluginSettings.PluginTag)));
             return HookResult.Handled;
         }
