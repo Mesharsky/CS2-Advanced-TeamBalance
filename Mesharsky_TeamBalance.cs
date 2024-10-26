@@ -18,13 +18,7 @@ public partial class Mesharsky_TeamBalance : BasePlugin
 
         AddTimer(5.0f, () =>
         {
-            string conVarName = "mp_autoteambalance";
-            ConVar? cvar = ConVar.Find(conVarName);
-
-            if (cvar == null)
-                return;
-
-            cvar.SetValue(false);
+            ConVar.Find("mp_autoteambalance")!.SetValue(false);
 
             PrintDebugMessage("Convar 'mp_autoteambalance' has been set to 'false'");
         });

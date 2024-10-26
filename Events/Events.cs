@@ -4,11 +4,15 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using static Mesharsky_TeamBalance.GameRules;
 
 namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
+    private ConVar mp_warmuptime = ConVar.Find("mp_warmuptime")!;
+    private ConVar mp_round_restart_delay = ConVar.Find("mp_round_restart_delay")!;
+
     public void Initialize_Events()
     {
         Event_PlayerDisconnect();
@@ -49,8 +53,8 @@ public partial class Mesharsky_TeamBalance
         if (!IsWarmup())
             return HookResult.Continue;
 
-        var endTime = ConVar.Find("mp_warmuptime")?.GetPrimitiveValue<float>();
-        var delay = endTime == null ? 2 : (endTime - 2);
+        var endTime = mp_warmuptime.GetPrimitiveValue<float>();
+        var delay = endTime - 2;
 
         // Always attempt to balance teams, even during warmup
         AddTimer((float)delay, AttemptBalanceTeams);
@@ -72,8 +76,8 @@ public partial class Mesharsky_TeamBalance
         bool ctWin = @event.Winner == (int)CsTeam.CounterTerrorist;
         balanceStats.UpdateStreaks(ctWin);
 
-        var endTime = ConVar.Find("mp_round_restart_delay")?.GetPrimitiveValue<float>();
-        var delay = endTime == null ? 2 : (endTime - 2);
+        var endTime = mp_round_restart_delay.GetPrimitiveValue<float>();
+        var delay = endTime - 2;
 
         AddTimer((float)delay, AttemptBalanceTeams);
 
@@ -104,14 +108,19 @@ public partial class Mesharsky_TeamBalance
 
         var allPlayers = Utilities.GetPlayers();
 
-        if (allPlayers == null)
+        if (allPlayers.Count == 0)
         {
             PrintDebugMessage("No players found.");
             return;
         }
 
-        foreach (var player in allPlayers.Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected))
+        foreach (var player in allPlayers)
         {
+            if (player.IsBot)
+            {
+                continue;
+            }
+
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
             {
                 cachedPlayer.Kills = player.ActionTrackingServices!.MatchStats.Kills;
@@ -145,7 +154,7 @@ public partial class Mesharsky_TeamBalance
         if (IsWarmup())
             return HookResult.Continue;
 
-        if (player == null || !player.IsValid)
+        if (player == null)
             return HookResult.Continue;
 
         int teamId = ParseTeamId(info);

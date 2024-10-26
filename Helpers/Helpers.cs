@@ -8,8 +8,6 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    public Timer? FindAndSetSpawnsTimer { get; set; } = null;
-
     private List<CBaseEntity> ctSpawns = [];
     private List<CBaseEntity> ttSpawns = [];
 
@@ -17,20 +15,15 @@ public partial class Mesharsky_TeamBalance
     {
         RegisterListener<Listeners.OnMapStart>((mapName) =>
         {
-            FindAndSetSpawnsTimer?.Kill();
-            FindAndSetSpawnsTimer = AddTimer(0.1f, () =>
+            AddTimer(1.0f, () =>
             {
                 FindAndSetSpawns();
-                FindAndSetSpawnsTimer?.Kill();
             });
         });
     }
 
     public void FindAndSetSpawns()
     {
-        ctSpawns = [];
-        ttSpawns = [];
-
         ctSpawns = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>("info_player_counterterrorist").ToList();         
         ttSpawns = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>("info_player_terrorist").ToList();
     }
@@ -39,7 +32,7 @@ public partial class Mesharsky_TeamBalance
     {
         var allPlayers = Utilities.GetPlayers();
 
-        if (allPlayers == null || allPlayers.Count == 0)
+        if (allPlayers.Count == 0)
         {
             PrintDebugMessage("No players found for spawn correction.");
             return;
@@ -47,10 +40,7 @@ public partial class Mesharsky_TeamBalance
 
         foreach (var player in allPlayers)
         {
-            if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || player.Connected != PlayerConnectedState.PlayerConnected)
-                continue;
-
-            if (!player.PawnIsAlive)
+            if (player.IsBot || !player.PawnIsAlive)
                 continue;
 
             if (IsInWrongSpawn(player))
@@ -70,7 +60,7 @@ public partial class Mesharsky_TeamBalance
 
         foreach (var spawn in enemySpawns)
         {
-            if (spawn == null || !spawn.IsValid || spawn.AbsOrigin == null)
+            if (!spawn.IsValid || spawn.AbsOrigin == null)
                 continue;
 
             const float positionThreshold = 1.0f;
@@ -90,14 +80,14 @@ public partial class Mesharsky_TeamBalance
     {
         List<CBaseEntity> teamSpawns = player.Team == CsTeam.CounterTerrorist ? ctSpawns : ttSpawns;
 
-        if (teamSpawns == null || teamSpawns.Count == 0)
+        if (teamSpawns.Count == 0)
         {
             PrintDebugMessage("No spawn points available for team.");
             return;
         }
 
         var occupiedPositions = Utilities.GetPlayers()
-            .Where(p => p != null && p.IsValid && p.PawnIsAlive)
+            .Where(p => p.PawnIsAlive)
             .Select(p => p.AbsOrigin)
             .Where(pos => pos != null)
             .ToList();
@@ -106,7 +96,7 @@ public partial class Mesharsky_TeamBalance
 
         foreach (var spawn in teamSpawns)
         {
-            if (spawn == null || !spawn.IsValid || spawn.AbsOrigin == null)
+            if (!spawn.IsValid || spawn.AbsOrigin == null)
                 continue;
 
             bool isOccupied = occupiedPositions.Any(pos => (spawn.AbsOrigin - pos!).Length() < occupiedThreshold);
@@ -143,7 +133,7 @@ public partial class Mesharsky_TeamBalance
     private static bool ChangePlayerTeam(ulong steamId, CsTeam newTeam)
     {
         var player = Utilities.GetPlayerFromSteamId(steamId);
-        if (player == null || !player.IsValid)
+        if (player == null)
         {
             PrintDebugMessage($"Failed to switch team for player with SteamID: {steamId}. Player not found or invalid.");
             return false;
@@ -180,87 +170,6 @@ public partial class Mesharsky_TeamBalance
         return true;
     }
 
-    public static bool IsWarmup()
-    {
-        return Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!
-            .WarmupPeriod;
-    }
-
-    public static bool IsHalftime()
-    {
-        var gamerulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
-        var gamerules = gamerulesProxy?.GameRules;
-        var halftimeEnabled = ConVar.Find("mp_halftime")?.GetPrimitiveValue<bool>() ?? false;
-        var maxRounds = ConVar.Find("mp_maxrounds")?.GetPrimitiveValue<int>() ?? 0;
-
-        if (gamerules == null || maxRounds == 0)
-            return false;
-
-        if (gamerules.GameRestart)
-            return true;
-
-        if (!halftimeEnabled)
-            return false;
-
-        int totalRoundsPlayed = gamerules.TotalRoundsPlayed;
-        int roundsPerHalf = maxRounds / 2;
-
-        return totalRoundsPlayed == roundsPerHalf;
-    }
-
-
-    public static bool IsOvertime()
-    {
-        var gamerulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
-        var gamerules = gamerulesProxy?.GameRules;
-        var maxRounds = ConVar.Find("mp_maxrounds")?.GetPrimitiveValue<int>() ?? 0;
-        var mp_overtime_enable = ConVar.Find("mp_overtime_enable")?.GetPrimitiveValue<bool>() ?? false;
-
-        if (gamerules == null || maxRounds == 0)
-            return false;
-
-        if (gamerules.GameRestart)
-            return true;
-
-        if (!mp_overtime_enable)
-            return false;
-
-        int totalRoundsPlayed = gamerules.TotalRoundsPlayed;
-
-        return totalRoundsPlayed >= maxRounds;
-    }
-
-
-    public static bool IsNextRoundHalftime()
-    {
-        var gamerulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
-        var gamerules = gamerulesProxy?.GameRules;
-        var halftimeEnabled = ConVar.Find("mp_halftime")?.GetPrimitiveValue<bool>() ?? false;
-        var maxRounds = ConVar.Find("mp_maxrounds")?.GetPrimitiveValue<int>() ?? 0;
-
-        if (gamerules == null || !halftimeEnabled || maxRounds == 0)
-            return false;
-
-        int totalRoundsPlayed = gamerules.TotalRoundsPlayed;
-        int roundsPerHalf = maxRounds / 2;
-
-        return totalRoundsPlayed + 1 == roundsPerHalf;
-    }
-
-    public static bool IsNextRoundOvertime()
-    {
-        var gamerulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
-        var gamerules = gamerulesProxy?.GameRules;
-        var maxRounds = ConVar.Find("mp_maxrounds")?.GetPrimitiveValue<int>() ?? 0;
-        var mp_overtime_enable = ConVar.Find("mp_overtime_enable")?.GetPrimitiveValue<bool>() ?? false;
-
-        if (gamerules == null || !mp_overtime_enable || maxRounds == 0)
-            return false;
-
-        int totalRoundsPlayed = gamerules.TotalRoundsPlayed;
-
-        return totalRoundsPlayed + 1 > maxRounds;
-    }
 
     private static readonly Dictionary<string, char> ColorMap = new()
     {
