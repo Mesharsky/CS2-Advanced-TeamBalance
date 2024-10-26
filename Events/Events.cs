@@ -17,6 +17,9 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        if (IsHalftime() || IsOvertime())
+            return HookResult.Continue;
+
         if (GlobalBalanceMade)
         {
             var ctPlayerCount = balanceStats.CT.Stats.Count;
@@ -26,23 +29,28 @@ public partial class Mesharsky_TeamBalance
 
             if (balanceStats.WasLastActionScramble)
             {
-                PrintToChatAllMsg("Teams have been scrambled.");
+                PrintToChatAllMsg("teams.scrambled");
             }
             else
             {
-                PrintToChatAllMsg("Teams have been balanced.");
+                PrintToChatAllMsg("teams.balanced");
             }
         }
         else
         {
-            PrintToChatAllMsg("No need for team balance at this moment.");
+            PrintToChatAllMsg("teams.balance.not.needed");
         }
+
+        AddTimer(5.0f, () =>
+        {
+            CorrectPlayerSpawns();
+        });
 
         if (!IsWarmup())
             return HookResult.Continue;
 
         var endTime = ConVar.Find("mp_warmuptime")?.GetPrimitiveValue<float>();
-        var delay = endTime == null ? 1 : (endTime - 1);
+        var delay = endTime == null ? 2 : (endTime - 2);
 
         // Always attempt to balance teams, even during warmup
         AddTimer((float)delay, AttemptBalanceTeams);
@@ -53,14 +61,19 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
+        if (IsNextRoundHalftime() || IsNextRoundOvertime())
+        {
+            PrintDebugMessage("Next round is halftime or overtime. Skipping team balancing.");
+            return HookResult.Continue;
+        }
+
         UpdatePlayerStatsInCache();
 
-        // Update win streaks based on the winner
         bool ctWin = @event.Winner == (int)CsTeam.CounterTerrorist;
         balanceStats.UpdateStreaks(ctWin);
 
         var endTime = ConVar.Find("mp_round_restart_delay")?.GetPrimitiveValue<float>();
-        var delay = endTime == null ? 1 : (endTime - 1);
+        var delay = endTime == null ? 2 : (endTime - 2);
 
         AddTimer((float)delay, AttemptBalanceTeams);
 
@@ -161,7 +174,9 @@ public partial class Mesharsky_TeamBalance
         if (!CanSwitchTeams(cachedPlayer, teamId))
         {
             PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
-            player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} you cannot switch to this team as it would violate the team balance");
+
+            player.PrintToChat($" {ChatColors.Red}[Team Balance] {ChatColors.Default} nie możesz przejść do tej drużyny ponieważ rozgrywka będzie nierówna.");
+            player.PrintToChat(ReplaceColorPlaceholders(string.Format(Localizer["teams.join.block"], Config?.PluginSettings.PluginTag)));
             return HookResult.Handled;
         }
 

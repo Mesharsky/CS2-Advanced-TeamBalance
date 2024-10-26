@@ -13,6 +13,7 @@ public partial class Mesharsky_TeamBalance : BasePlugin
     {
         LoadConfiguration();
         Initialize_Events();
+        Initialize_Misc();
         AddCommandListener("jointeam", Command_JoinTeam);
 
         AddTimer(5.0f, () =>

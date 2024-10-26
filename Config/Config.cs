@@ -22,6 +22,7 @@ public partial class Mesharsky_TeamBalance
 
         if (model.TryGetValue("PluginSettings", out var pluginSettingsObj) && pluginSettingsObj is TomlTable pluginTable)
         {
+            var pluginTag = pluginTable["plugin_chat_tag"]?.ToString() ?? "[red][TeamBalance][default]";
             var minPlayers = int.Parse(pluginTable["minimum_players"]?.ToString() ?? "4");
             var maxScoreBalanceRatio = float.Parse(pluginTable["score_balance_ratio"]?.ToString() ?? "2.0");
             var usePerformanceScore = bool.Parse(pluginTable["use_performance_score"]?.ToString() ?? "true");
@@ -35,6 +36,7 @@ public partial class Mesharsky_TeamBalance
 
             var pluginSettings = new PluginSettingsConfig
             {
+                PluginTag = pluginTag,
                 MinPlayers = minPlayers,
                 MaxScoreBalanceRatio = maxScoreBalanceRatio,
                 UsePerformanceScore = usePerformanceScore,
@@ -63,7 +65,6 @@ public partial class Mesharsky_TeamBalance
         }
     }
 
-
     private static void GenerateDefaultConfigFile(string configPath)
     {
         PrintDebugMessage("Configuration file not found. Generating default configuration...");
@@ -77,61 +78,63 @@ public partial class Mesharsky_TeamBalance
                     .AppendLine("# Adjust these settings according to your server's needs.")
                     .AppendLine()
                     .AppendLine("[PluginSettings]")
-                    .AppendLine("# The minimum number of players required on the server before the team balance")
-                    .AppendLine("# feature activates. This prevents balancing when there are too few players.")
+                    .AppendLine("# Plugin's chat tag for messages in chat.")
+                    .AppendLine("# Supported colors:")
+                    .AppendLine("# [white], [darkred], [green], [lightyellow], [lightblue], [olive], [lime],")
+                    .AppendLine("# [red], [lightpurple], [purple], [grey], [yellow], [gold], [silver], [blue],")
+                    .AppendLine("# [darkblue], [bluegrey], [magenta], [lightred], [orange]")
+                    .AppendLine("plugin_chat_tag = \"[red][TeamBalance]\"")
+                    .AppendLine()
+                    .AppendLine("# Minimum number of players required on the server before team balance activates.")
+                    .AppendLine("# Prevents balancing when there are too few players.")
                     .AppendLine("# Default: 4")
                     .AppendLine("minimum_players = 4")
                     .AppendLine()
-                    .AppendLine("# The maximum allowed ratio of scores between teams before triggering a balance.")
-                    .AppendLine("# For example, if set to 1.6, the balance will trigger if one team's score is")
-                    .AppendLine("# 60% higher than the other team's score. Adjust this value based on how strict")
-                    .AppendLine("# you want the balancing to be.")
+                    .AppendLine("# Maximum allowed score ratio between teams before triggering a balance.")
+                    .AppendLine("# For example, if set to 2.0, balancing will trigger if one team's score")
+                    .AppendLine("# is 2 times greater than the other team's score.")
                     .AppendLine("# Default: 2.0")
                     .AppendLine("score_balance_ratio = 2.0")
                     .AppendLine()
-                    .AppendLine("# Whether to use PerformanceScore for balancing.")
-                    .AppendLine("# PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),")
-                    .AppendLine("# damage dealt, and the in-game score to evaluate a player's overall performance.")
-                    .AppendLine("# If set to true, the balance algorithm will use PerformanceScore to evaluate ")
-                    .AppendLine("# players when balancing teams, rather than just the in-game score.")
+                    .AppendLine("# Use PerformanceScore for balancing.")
+                    .AppendLine("# PerformanceScore takes into account KDA (Kills, Deaths, Assists),")
+                    .AppendLine("# damage dealt, and the in-game score to evaluate player performance.")
                     .AppendLine("# Default: true")
                     .AppendLine("use_performance_score = true")
                     .AppendLine()
-                    .AppendLine("# Maximum allowed difference in team sizes.")
-                    .AppendLine("# This setting controls how much the team sizes are allowed to differ after balancing.")
-                    .AppendLine("# If set to 1, the algorithm will attempt to ensure that the difference in the number ")
-                    .AppendLine("# of players between the teams is no more than one. This helps prevent one team from")
-                    .AppendLine("# having a significant numerical advantage over the other.")
+                    .AppendLine("# Maximum allowed difference in team sizes after balancing.")
+                    .AppendLine("# If set to 1, the teams will be balanced such that one team cannot have")
+                    .AppendLine("# more than one extra player compared to the other.")
                     .AppendLine("# Default: 1")
                     .AppendLine("max_team_size_difference = 1")
                     .AppendLine()
                     .AppendLine("# Enable or disable debug messages.")
-                    .AppendLine("# If set to true, the plugin will print debug messages to the console.")
+                    .AppendLine("# If true, debug messages will be printed to the server console.")
                     .AppendLine("# Default: true")
                     .AppendLine("enable_debug_messages = true")
                     .AppendLine()
                     .AppendLine("# Enable or disable chat messages.")
-                    .AppendLine("# If set to true, the plugin will print messages to the chat.")
+                    .AppendLine("# If true, messages will be sent to the chat.")
                     .AppendLine("# Default: true")
                     .AppendLine("enable_chat_messages = true")
                     .AppendLine()
                     .AppendLine("# Scramble Mode Configuration")
-                    .AppendLine("# scramble_mode determines the type of scrambling behavior.")
-                    .AppendLine("# Options: \"none\" (no scrambling), \"round\" (scramble teams every X rounds),")
-                    .AppendLine("# \"winstreak\" (scramble if a team wins X rounds in a row), \"halftime\" (scramble at halftime).")
+                    .AppendLine("# scramble_mode determines when and how teams are scrambled.")
+                    .AppendLine("# Options: \"none\" (no scrambling), \"round\" (scramble every X rounds),")
+                    .AppendLine("# \"winstreak\" (scramble after a team wins X rounds in a row),")
+                    .AppendLine("# \"halftime\" (scramble at halftime).")
                     .AppendLine("# Default: \"none\"")
                     .AppendLine("scramble_mode = \"none\"")
                     .AppendLine()
-                    .AppendLine("# Number of rounds after which teams should be scrambled (used if scramble_mode is \"round\").")
+                    .AppendLine("# Number of rounds after which teams should be scrambled (if scramble_mode is \"round\").")
                     .AppendLine("# Default: 5")
                     .AppendLine("round_scramble_interval = 5")
                     .AppendLine()
-                    .AppendLine("# Number of consecutive wins required to trigger a scramble (used if scramble_mode is \"winstreak\").")
+                    .AppendLine("# Number of consecutive wins to trigger a scramble (if scramble_mode is \"winstreak\").")
                     .AppendLine("# Default: 3")
                     .AppendLine("winstreak_scramble_threshold = 3")
                     .AppendLine()
-                    .AppendLine("# Enable or disable halftime scrambling.")
-                    .AppendLine("# If set to true and scramble_mode is \"halftime\", teams will be scrambled at halftime.")
+                    .AppendLine("# Enable or disable halftime scrambling (if scramble_mode is \"halftime\").")
                     .AppendLine("# Default: false")
                     .AppendLine("halftime_scramble_enabled = false");
 
@@ -139,5 +142,4 @@ public partial class Mesharsky_TeamBalance
 
         PrintDebugMessage("Default configuration file created successfully.");
     }
-
 }

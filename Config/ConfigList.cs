@@ -9,6 +9,7 @@ public partial class Mesharsky_TeamBalance
 
     public class PluginSettingsConfig
     {
+        public string PluginTag { get; set; } = "[red][TeamBalance][default]";
         public int MinPlayers { get; set; } = 4;
         public float MaxScoreBalanceRatio { get; set; } = 2.0f;
         public bool UsePerformanceScore { get; set; } = true;
@@ -20,7 +21,6 @@ public partial class Mesharsky_TeamBalance
         public int WinstreakScrambleThreshold { get; set; } = 3;
         public bool HalftimeScrambleEnabled { get; set; } = false;
 
-        // Validate and adjust settings if scramble mode is enabled
         public void ValidateSettings()
         {
             if (ScrambleMode != "none")

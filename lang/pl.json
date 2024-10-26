@@ -1,0 +1,6 @@
+{
+    "teams.scrambled": "{0} Drużyny zostały wymieszane.",
+    "teams.balanced": "{0} Drużyny zostały zbalansowane.",
+    "teams.balance.not.needed": "{0} Rozmiary drużyn są równe. Balans nie jest potrzebny.",
+    "teams.join.block": "{0} Nie możesz przejść do tej drużyny, ponieważ naruszyłoby to balans drużyn."
+}

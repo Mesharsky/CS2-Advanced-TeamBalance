@@ -2,68 +2,66 @@
 # https://csowicze.pl/
 
 # Team Balance Plugin Configuration
-# Make sure to adjust these settings according to your server's needs.
+# Adjust these settings according to your server's needs.
 
 [PluginSettings]
-# The minimum number of players required on the server before the team balance
-# feature activates. This prevents balancing when there are too few players.
+
+# Plugin's chat tag for messages in chat.
+# Supported colors:
+# [white], [darkred], [green], [lightyellow], [lightblue], [olive], [lime],
+# [red], [lightpurple], [purple], [grey], [yellow], [gold], [silver], [blue],
+# [darkblue], [bluegrey], [magenta], [lightred], [orange]
+plugin_chat_tag = "[red][TeamBalance]"
+
+# Minimum number of players required on the server before team balance activates.
+# Prevents balancing when there are too few players.
 # Default: 4
 minimum_players = 4
 
-# The maximum allowed ratio of scores between teams before triggering a balance.
-# For example, if set to 1.6, the balance will trigger if one team's score is
-# 60% higher than the other team's score. Adjust this value based on how strict
-# you want the balancing to be.
+# Maximum allowed score ratio between teams before triggering a balance.
+# For example, if set to 2.0, balancing will trigger if one team's score
+# is 2 times greater than the other team's score.
 # Default: 2.0
 score_balance_ratio = 2.0
 
-# Whether to use PerformanceScore for balancing.
-# PerformanceScore is a custom metric that considers KDA (Kills, Deaths, Assists),
-# damage dealt, and the in-game score to evaluate a player's overall performance.
-# If set to true, the balance algorithm will use PerformanceScore to evaluate 
-# players when balancing teams, rather than just the in-game score.
+# Use PerformanceScore for balancing.
+# PerformanceScore takes into account KDA (Kills, Deaths, Assists),
+# damage dealt, and the in-game score to evaluate player performance.
 # Default: true
 use_performance_score = true
 
-# Maximum allowed difference in team sizes.
-# This setting controls how much the team sizes are allowed to differ after balancing.
-# If set to 1, the algorithm will attempt to ensure that the difference in the number 
-# of players between the teams is no more than one. This helps prevent one team from
-# having a significant numerical advantage over the other.
+# Maximum allowed difference in team sizes after balancing.
+# If set to 1, the teams will be balanced such that one team cannot have
+# more than one extra player compared to the other.
 # Default: 1
 max_team_size_difference = 1
 
 # Enable or disable debug messages.
-# If set to true, the plugin will print debug messages to the console.
+# If true, debug messages will be printed to the server console.
 # Default: true
 enable_debug_messages = true
 
 # Enable or disable chat messages.
-# If set to true, the plugin will print messages to the chat.
+# If true, messages will be sent to the chat.
 # Default: true
 enable_chat_messages = true
 
 # Scramble Mode Configuration
-# scramble_mode determines the type of scrambling behavior.
-# Options: 
-# 
-# "none" (no scrambling)
-# "round" (scramble teams every X rounds),
-# "winstreak" (scramble if a team wins X rounds in a row)
+# scramble_mode determines when and how teams are scrambled.
+# Options: "none" (no scrambling), "round" (scramble every X rounds),
+# "winstreak" (scramble after a team wins X rounds in a row),
 # "halftime" (scramble at halftime).
-#
 # Default: "none"
 scramble_mode = "none"
 
-# Number of rounds after which teams should be scrambled (used if scramble_mode is "round").
+# Number of rounds after which teams should be scrambled (if scramble_mode is "round").
 # Default: 5
 round_scramble_interval = 5
 
-# Number of consecutive wins required to trigger a scramble (used if scramble_mode is "winstreak").
+# Number of consecutive wins to trigger a scramble (if scramble_mode is "winstreak").
 # Default: 3
 winstreak_scramble_threshold = 3
 
-# Enable or disable halftime scrambling.
-# If set to true and scramble_mode is "halftime", teams will be scrambled at halftime.
+# Enable or disable halftime scrambling (if scramble_mode is "halftime").
 # Default: false
 halftime_scramble_enabled = false

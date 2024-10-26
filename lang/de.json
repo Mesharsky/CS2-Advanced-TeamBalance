@@ -1,0 +1,6 @@
+{
+    "teams.scrambled": "{0} Teams wurden durcheinandergebracht.",
+    "teams.balanced": "{0} Teams wurden ausgeglichen.",
+    "teams.balance.not.needed": "{0} Die Teamgrößen sind gleich. Kein Ausgleich nötig.",
+    "teams.join.block": "{0} Du kannst diesem Team nicht beitreten, da es das Teamgleichgewicht stören würde."
+}

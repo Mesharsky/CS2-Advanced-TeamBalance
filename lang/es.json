@@ -1,0 +1,6 @@
+{
+    "teams.scrambled": "{0} Los equipos han sido mezclados.",
+    "teams.balanced": "{0} Los equipos han sido equilibrados.",
+    "teams.balance.not.needed": "{0} Los tamaños de los equipos son iguales. No se necesita equilibrio.",
+    "teams.join.block": "{0} No puedes cambiar a este equipo ya que violaría el equilibrio de los equipos."
+}

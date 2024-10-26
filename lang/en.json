@@ -1,0 +1,6 @@
+{
+    "teams.scrambled": "{0} Teams have been scrambled.",
+    "teams.balanced": "{0} Teams have been balanced.",
+    "teams.balance.not.needed": "{0} Team sizes are equal. No balance needed.",
+    "teams.join.block": "{0} You cannot switch to this team as it would violate the team balance."
+}

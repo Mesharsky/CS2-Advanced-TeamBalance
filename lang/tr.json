@@ -1,0 +1,6 @@
+{
+    "teams.scrambled": "{0} Takımlar karıştırıldı.",
+    "teams.balanced": "{0} Takımlar dengelendi.",
+    "teams.balance.not.needed": "{0} Takım boyutları eşit. Dengelemeye gerek yok.",
+    "teams.join.block": "{0} Bu takıma geçemezsiniz çünkü takım dengesini bozacaktır."
+}

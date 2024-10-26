@@ -10,6 +10,18 @@ public partial class Mesharsky_TeamBalance
     {
         PrintDebugMessage("Attempting to balance teams...");
 
+        if (IsHalftime())
+        {
+            PrintDebugMessage("Halftime detected, not balancing teams.");
+            return;
+        }
+
+        if (IsOvertime())
+        {
+            PrintDebugMessage("Overtime detected, not balancing teams.");
+            return;
+        }
+
         GlobalBalanceMade = false;
 
         if (!ShouldTeamsBeRebalanced())
