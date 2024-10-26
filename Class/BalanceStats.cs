@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Modules.Utils;
+using static Mesharsky_TeamBalance.GameRules;
 
 namespace Mesharsky_TeamBalance;
 
@@ -32,7 +33,7 @@ public partial class Mesharsky_TeamBalance
 
         public void GetStats(List<PlayerStats> allPlayers)
         {
-            if (allPlayers == null || allPlayers.Count == 0)
+            if (allPlayers.Count == 0)
             {
                 PrintDebugMessage("No players to get stats for.");
                 return;
@@ -43,10 +44,19 @@ public partial class Mesharsky_TeamBalance
 
             foreach (var player in allPlayers)
             {
-                if (player.Team == (int)CsTeam.CounterTerrorist)
-                    CT.AddPlayer(player);
-                else if (player.Team == (int)CsTeam.Terrorist)
-                    T.AddPlayer(player);
+                switch (player.Team)
+                {
+                    case (int)CsTeam.CounterTerrorist:
+                        {
+                            CT.AddPlayer(player);
+                            break;
+                        }
+                    case (int)CsTeam.Terrorist:
+                        {
+                            T.AddPlayer(player);
+                            break;
+                        }
+                }
             }
         }
 
@@ -147,15 +157,8 @@ public partial class Mesharsky_TeamBalance
             return null;
         }
 
-
         public void PerformSwap(PlayerStats ctPlayer, PlayerStats tPlayer)
         {
-            if (ctPlayer == null || tPlayer == null)
-            {
-                PrintDebugMessage("Cannot swap null players.");
-                return;
-            }
-
             CT.RemovePlayer(ctPlayer);
             T.RemovePlayer(tPlayer);
 
@@ -169,24 +172,12 @@ public partial class Mesharsky_TeamBalance
         {
             foreach (var player in CT.Stats)
             {
-                if (player == null)
-                {
-                    PrintDebugMessage("Found null player in CT stats, skipping.");
-                    continue;
-                }
-
                 if (player.Team != (int)CsTeam.CounterTerrorist)
                     ChangePlayerTeam(player.PlayerSteamID, CsTeam.CounterTerrorist);
             }
 
             foreach (var player in T.Stats)
             {
-                if (player == null)
-                {
-                    PrintDebugMessage("Found null player in T stats, skipping.");
-                    continue;
-                }
-
                 if (player.Team != (int)CsTeam.Terrorist)
                     ChangePlayerTeam(player.PlayerSteamID, CsTeam.Terrorist);
             }

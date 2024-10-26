@@ -13,11 +13,15 @@ public partial class Mesharsky_TeamBalance
     {
         PrintDebugMessage("Updating player teams in cache...");
 
-        var allPlayers = Utilities.GetPlayers()
-            .Where(p => p != null && p.IsValid && !p.IsBot && !p.IsHLTV && p.Connected == PlayerConnectedState.PlayerConnected);
+        var allPlayers = Utilities.GetPlayers();
 
         foreach (var player in allPlayers)
         {
+            if (player.IsBot)
+            {
+                continue;
+            }
+
             if (playerCache.TryGetValue(player.SteamID, out var cachedPlayer))
             {
                 cachedPlayer.Team = (int)player.Team;

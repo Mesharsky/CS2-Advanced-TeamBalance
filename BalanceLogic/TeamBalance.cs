@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Modules.Utils;
+using static Mesharsky_TeamBalance.GameRules;
 
 namespace Mesharsky_TeamBalance;
 
@@ -30,7 +31,8 @@ public partial class Mesharsky_TeamBalance
         PrintDebugMessage("Balancing teams...");
 
         var players = GetPlayersForRebalance();
-        if (players == null || players.Count == 0)
+
+        if (players.Count == 0)
         {
             PrintDebugMessage("No players available for rebalancing.");
             return;
@@ -52,8 +54,9 @@ public partial class Mesharsky_TeamBalance
 
         UpdatePlayerTeamsInCache();
 
-        var players = playerCache?.Values.ToList();
-        if (players == null || players.Count == 0)
+        var players = playerCache.Values.ToList();
+
+        if (players.Count == 0)
         {
             PrintDebugMessage("No players found for rebalancing.");
             return false;

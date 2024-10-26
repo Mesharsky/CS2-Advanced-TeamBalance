@@ -62,7 +62,8 @@ public partial class Mesharsky_TeamBalance
         PrintDebugMessage("Scrambling teams...");
 
         var players = playerCache.Values.ToList();
-        if (players == null || players.Count == 0)
+
+        if (players.Count == 0)
         {
             PrintDebugMessage("No players available for scrambling.");
             return;
