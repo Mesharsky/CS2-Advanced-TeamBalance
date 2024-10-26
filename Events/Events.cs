@@ -10,12 +10,37 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    private ConVar mp_warmuptime = ConVar.Find("mp_warmuptime")!;
-    private ConVar mp_round_restart_delay = ConVar.Find("mp_round_restart_delay")!;
+    private readonly ConVar mp_warmuptime = ConVar.Find("mp_warmuptime")!;
+    private readonly ConVar mp_round_restart_delay = ConVar.Find("mp_round_restart_delay")!;
 
     public void Initialize_Events()
     {
         Event_PlayerDisconnect();
+    }
+
+    [GameEventHandler]
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    {
+        if (IsWarmup())
+            return HookResult.Continue;
+
+        var player = @event.Userid;
+
+        if (player == null || !player.IsValid || player.Connected != PlayerConnectedState.PlayerConnected)
+            return HookResult.Continue;
+
+        if (!player.PawnIsAlive)
+            return HookResult.Continue;
+        
+        AddTimer(0.5f, () =>
+        {
+            if (IsInWrongSpawn(player))
+            {
+                TeleportPlayerToSpawn(player);
+            }
+        });
+
+        return HookResult.Continue;
     }
 
     [GameEventHandler]
@@ -44,11 +69,6 @@ public partial class Mesharsky_TeamBalance
         {
             PrintToChatAllMsg("teams.balance.not.needed");
         }
-
-        AddTimer(5.0f, () =>
-        {
-            CorrectPlayerSpawns();
-        });
 
         if (!IsWarmup())
             return HookResult.Continue;

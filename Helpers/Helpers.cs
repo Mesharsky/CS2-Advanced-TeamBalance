@@ -26,28 +26,8 @@ public partial class Mesharsky_TeamBalance
     {
         ctSpawns = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>("info_player_counterterrorist").ToList();         
         ttSpawns = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>("info_player_terrorist").ToList();
-    }
 
-    private void CorrectPlayerSpawns()
-    {
-        var allPlayers = Utilities.GetPlayers();
-
-        if (allPlayers.Count == 0)
-        {
-            PrintDebugMessage("No players found for spawn correction.");
-            return;
-        }
-
-        foreach (var player in allPlayers)
-        {
-            if (player.IsBot || !player.PawnIsAlive)
-                continue;
-
-            if (IsInWrongSpawn(player))
-            {
-                TeleportPlayerToSpawn(player);
-            }
-        }
+        PrintDebugMessage($"[TeamBalance] CT Spawns: {ctSpawns.Count} -- Terrorist Spawns: {ttSpawns.Count}");
     }
 
     private bool IsInWrongSpawn(CCSPlayerController player)
