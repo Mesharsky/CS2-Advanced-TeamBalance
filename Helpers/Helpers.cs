@@ -124,7 +124,7 @@ public partial class Mesharsky_TeamBalance
             return true;
         }
 
-        player.ChangeTeam(newTeam);
+        player.SwitchTeam(newTeam);
 
         playerCache.AddOrUpdate(steamId,
             (key) =>

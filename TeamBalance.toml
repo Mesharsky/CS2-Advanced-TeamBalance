@@ -11,7 +11,7 @@
 # [white], [darkred], [green], [lightyellow], [lightblue], [olive], [lime],
 # [red], [lightpurple], [purple], [grey], [yellow], [gold], [silver], [blue],
 # [darkblue], [bluegrey], [magenta], [lightred], [orange]
-plugin_chat_tag = "[red][TeamBalance]"
+plugin_chat_tag = "{red}[TeamBalance]"
 
 # Minimum number of players required on the server before team balance activates.
 # Prevents balancing when there are too few players.
