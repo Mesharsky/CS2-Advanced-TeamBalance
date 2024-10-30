@@ -1,8 +1,8 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Mesharsky_TeamBalance.GameRules;
 
@@ -10,12 +10,21 @@ namespace Mesharsky_TeamBalance;
 
 public partial class Mesharsky_TeamBalance
 {
-    private readonly ConVar mp_warmuptime = ConVar.Find("mp_warmuptime")!;
-    private readonly ConVar mp_round_restart_delay = ConVar.Find("mp_round_restart_delay")!;
-
     public void Initialize_Events()
     {
         Event_PlayerDisconnect();
+        Event_RoundStartPre();
+    }
+
+    public void Event_RoundStartPre()
+    {
+        RegisterEventHandler((EventRoundPrestart @event, GameEventInfo info) =>
+        {
+            UpdatePlayerStatsInCache();
+            AttemptBalanceTeams();
+
+            return HookResult.Continue;
+        });
     }
 
     [GameEventHandler]
@@ -31,12 +40,15 @@ public partial class Mesharsky_TeamBalance
 
         if (!player.PawnIsAlive)
             return HookResult.Continue;
+
+        ValidatePlayerModel(player);
         
         AddTimer(0.5f, () =>
         {
             if (IsInWrongSpawn(player))
             {
                 TeleportPlayerToSpawn(player);
+                ValidatePlayerModel(player);
             }
         });
 
@@ -46,16 +58,8 @@ public partial class Mesharsky_TeamBalance
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
-        if (IsHalftime() || IsOvertime())
-            return HookResult.Continue;
-
         if (GlobalBalanceMade)
         {
-            var ctPlayerCount = balanceStats.CT.Stats.Count;
-            var tPlayerCount = balanceStats.T.Stats.Count;
-            var ctTotalScore = balanceStats.CT.TotalPerformanceScore;
-            var tTotalScore = balanceStats.T.TotalPerformanceScore;
-
             if (balanceStats.WasLastActionScramble)
             {
                 PrintToChatAllMsg("teams.scrambled");
@@ -70,36 +74,16 @@ public partial class Mesharsky_TeamBalance
             PrintToChatAllMsg("teams.balance.not.needed");
         }
 
-        if (!IsWarmup())
-            return HookResult.Continue;
-
-        var endTime = mp_warmuptime.GetPrimitiveValue<float>();
-        var delay = endTime - 2;
-
-        // Always attempt to balance teams, even during warmup
-        AddTimer((float)delay, AttemptBalanceTeams);
-
         return HookResult.Continue;
     }
 
     [GameEventHandler]
     public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
-        if (IsNextRoundHalftime() || IsNextRoundOvertime())
-        {
-            PrintDebugMessage("Next round is halftime or overtime. Skipping team balancing.");
-            return HookResult.Continue;
-        }
-
         UpdatePlayerStatsInCache();
 
         bool ctWin = @event.Winner == (int)CsTeam.CounterTerrorist;
         balanceStats.UpdateStreaks(ctWin);
-
-        var endTime = mp_round_restart_delay.GetPrimitiveValue<float>();
-        var delay = endTime - 2;
-
-        AddTimer((float)delay, AttemptBalanceTeams);
 
         return HookResult.Continue;
     }
@@ -204,7 +188,7 @@ public partial class Mesharsky_TeamBalance
         {
             PrintDebugMessage($"Player {cachedPlayer.PlayerName} cannot switch to team {teamId} as it would violate the team balance.");
 
-            player.PrintToChat(ReplaceColorPlaceholders(string.Format(Localizer["teams.join.block"], Config?.PluginSettings.PluginTag)));
+            player.PrintToChat(StringExtensions.ReplaceColorTags(string.Format(Localizer["teams.join.block"], Config?.PluginSettings.PluginTag)));
             return HookResult.Handled;
         }
 

@@ -1,8 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Cvars;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
-using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
 
 namespace Mesharsky_TeamBalance;
 
@@ -106,7 +105,7 @@ public partial class Mesharsky_TeamBalance
     {
         if (Config?.PluginSettings.EnableChatMessages == true)
         {
-            Server.PrintToChatAll(ReplaceColorPlaceholders(string.Format(Localizer[keyValue], Config.PluginSettings.PluginTag)));
+            Server.PrintToChatAll(StringExtensions.ReplaceColorTags(string.Format(Localizer[keyValue], Config.PluginSettings.PluginTag)));
         }
     }
 
@@ -125,7 +124,7 @@ public partial class Mesharsky_TeamBalance
             return true;
         }
 
-        player.SwitchTeam(newTeam);
+        player.ChangeTeam(newTeam);
 
         playerCache.AddOrUpdate(steamId,
             (key) =>
@@ -150,38 +149,24 @@ public partial class Mesharsky_TeamBalance
         return true;
     }
 
-
-    private static readonly Dictionary<string, char> ColorMap = new()
+    public static void ValidatePlayerModel(CCSPlayerController player)
     {
-        { "[default]", ChatColors.Default },
-        { "[white]", ChatColors.White },
-        { "[darkred]", ChatColors.DarkRed },
-        { "[green]", ChatColors.Green },
-        { "[lightyellow]", ChatColors.LightYellow },
-        { "[lightblue]", ChatColors.LightBlue },
-        { "[olive]", ChatColors.Olive },
-        { "[lime]", ChatColors.Lime },
-        { "[red]", ChatColors.Red },
-        { "[lightpurple]", ChatColors.LightPurple },
-        { "[purple]", ChatColors.Purple },
-        { "[grey]", ChatColors.Grey },
-        { "[yellow]", ChatColors.Yellow },
-        { "[gold]", ChatColors.Gold },
-        { "[silver]", ChatColors.Silver },
-        { "[blue]", ChatColors.Blue },
-        { "[darkblue]", ChatColors.DarkBlue },
-        { "[bluegrey]", ChatColors.BlueGrey },
-        { "[magenta]", ChatColors.Magenta },
-        { "[lightred]", ChatColors.LightRed },
-        { "[orange]", ChatColors.Orange }
-    };
+        if (player == null || !player.IsValid) return;
 
-    private static string ReplaceColorPlaceholders(string message)
-    {
-        foreach (var colorPlaceholder in ColorMap)
+        var playerPawn = player.PlayerPawn.Value;
+        if (playerPawn == null || !playerPawn.IsValid || playerPawn.LifeState != (byte)LifeState_t.LIFE_ALIVE) return;
+
+        string modelPath = playerPawn.CBodyComponent?.SceneNode?.GetSkeletonInstance().ModelState.ModelName ?? string.Empty;
+
+        var team = player.Team;
+        switch (team)
         {
-            message = message.Replace(colorPlaceholder.Key, colorPlaceholder.Value.ToString());
+            case CsTeam.CounterTerrorist when modelPath.Contains("/tm_"):
+                playerPawn.SetModel("characters/models/ctm_sas/ctm_sas.vmdl");
+                break;
+            case CsTeam.Terrorist when modelPath.Contains("/ctm_"):
+                playerPawn.SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
+                break;
         }
-        return message;
     }
 }
