@@ -1,6 +1,18 @@
 {
-    "teams.scrambled": "{0} Takımlar karıştırıldı.",
-    "teams.balanced": "{0} Takımlar dengelendi.",
-    "teams.balance.not.needed": "{0} Takım boyutları eşit. Dengelemeye gerek yok.",
-    "teams.join.block": "{0} Bu takıma geçemezsiniz çünkü takım dengesini bozacaktır."
+    "jointeam.imbalance": "{0} Takım dengesizliğine neden olacağı için bu takıma {red}katılamazsın{default}.",
+    "jointeam.suggest": "{0} Dengeyi korumak için {green}{1}{default} takımına katılmayı dene.",
+    "jointeam.forced": "{0} Dengeyi korumak için {green}{1}{default} takımına taşındın.",
+    "jointeam.delayed": "{0} {purple}Öldüğünde{default} dengeli bir takıma taşınacaksın.",
+    
+    "balance.scramble.winstreak": "{0} {green}{1}{default} takımı art arda {lightred}{2}{default} tur kazandıktan sonra takımlar {gold}karıştırılacak{default}!",
+    "balance.boost.losestreak": "{0} {red}{1}{default} takımı art arda {lightred}{2}{default} tur kaybetti. {green}Denge sistemi bir sonraki turda onlara daha iyi oyuncular atayacak{default}.",
+    "balance.size.moved": "{0} Takım sayı dengesini korumak için {green}{1}{default} oyuncu taşındı.",
+    "balance.skill.swapped": "{0} Beceri seviyelerini dengelemek için {green}{1}{default} oyuncu çifti değiştirildi.",
+    "balance.force": "{0} {red}Kritik takım dengesizliği tespit edildi{default}. {green}{1}{default} oyuncu takım değiştirmeye zorlandı.",
+    
+    "scramble.random": "{0} Daha iyi denge için takımlar {gold}rastgele karıştırıldı{default}!",
+    "scramble.skill": "{0} Daha iyi denge için takımlar {gold}beceriye göre karıştırıldı{default}!",
+    
+    "player.moved.t": "{0} Dengeyi korumak için {orange}Terörist{default} takımına taşındın.",
+    "player.moved.ct": "{0} Dengeyi korumak için {blue}Anti-Terörist{default} takımına taşındın."
 }

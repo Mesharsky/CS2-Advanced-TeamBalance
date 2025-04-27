@@ -1,6 +1,18 @@
 {
-    "teams.scrambled": "{0} Les équipes ont été mélangées.",
-    "teams.balanced": "{0} Les équipes ont été équilibrées.",
-    "teams.balance.not.needed": "{0} Les tailles des équipes sont égales. Aucun équilibrage nécessaire.",
-    "teams.join.block": "{0} Vous ne pouvez pas rejoindre cette équipe car cela perturberait l'équilibre des équipes."
+    "jointeam.imbalance": "{0} Tu {red}ne peux pas rejoindre{default} cette équipe car cela déséquilibrerait les équipes.",
+    "jointeam.suggest": "{0} Essaye plutôt de rejoindre {green}{1}{default} pour maintenir l'équilibre des équipes.",
+    "jointeam.forced": "{0} Tu as été déplacé vers {green}{1}{default} pour maintenir l'équilibre des équipes.",
+    "jointeam.delayed": "{0} Tu seras déplacé vers une autre équipe afin de l'équilibrée {purple}à ta mort{default}.",
+
+    "balance.scramble.winstreak": "{0} Les équipes seront {gold}mélangées{default} après que les {green}{1}{default} gagne {lightred}{2}{default} manches d'affilée !",
+    "balance.boost.losestreak": "{0} L'équipe {red}{1}{default} a perdu {lightred}{2}{default} manches d'affilée. {green}L'équilibrage leur attribuera de meilleurs joueurs{default} à la prochaine manche.",
+    "balance.size.moved": "{0} {green}{1}{default} joueur{2} déplacé{2} pour maintenir l'équilibre numérique des équipes.",
+    "balance.skill.swapped": "{0} {green}{1}{default} paire{2} de joueurs échangée{2} pour équilibrer le niveau.",
+    "balance.force": "{0} {red}Déséquilibre critique d'équipe détecté{default}. {green}{1}{default} joueurs ont été forcés de changer d'équipe.",
+
+    "scramble.random": "{0} Les équipes ont été {gold}mélangées aléatoirement{default} pour un meilleur équilibre !",
+    "scramble.skill": "{0} Les équipes ont été {gold}mélangées selon leurs niveaux{default} pour un meilleur équilibre !",
+
+    "player.moved.t": "{0} Tu as été déplacé vers les {orange}Terroriste{default} pour maintenir l'équilibre des équipes.",
+    "player.moved.ct": "{0} Tu as été déplacé vers les {blue}Anti-Terroriste{default} pour maintenir l'équilibre des équipes."
 }

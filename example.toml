@@ -1,0 +1,95 @@
+# Advanced Team Balance Plugin Configuration
+
+# ======================================
+# General Plugin Settings
+# ======================================
+[General]
+# Tag appears in chat messages
+PluginTag = "{red}[TeamBalance]{default}"
+
+# Minimum number of players required for balancing to activate
+MinimumPlayers = 6
+
+# Enable debug logging for troubleshooting
+EnableDebug = false
+
+# ======================================
+# Team Switching Settings
+# ======================================
+[TeamSwitch]
+# When balancing should happen (select multiple if needed)
+# Available options:
+#   - "OnRoundStart": Balance at the start of each round
+#   - "OnPlayerJoin": Balance when a player joins
+#   - "OnPlayerDisconnect": Balance when a player leaves
+#   - "OnRoundEnd": Balance when round ends.
+BalanceTriggers = ["OnRoundStart", "OnPlayerJoin", "OnPlayerDisconnect"]
+
+# Maximum allowed difference in team sizes
+# This is always enforced with highest priority
+# Example: If set to 1, one team may have at most 1 more player than the other
+MaxTeamSizeDifference = 1
+
+# Minimum rounds a player must stay on their team before being eligible for switching
+MinRoundsBeforeSwitch = 2
+
+# Seconds of immunity after being switched (prevents ping-ponging players between teams)
+SwitchImmunityTime = 60
+
+# Whether to balance teams during warmup rounds
+BalanceDuringWarmup = false
+
+# ======================================
+# Team Balancing Method
+# ======================================
+[Balancing]
+# How to balance teams - Choose ONE method:
+#   - "KD": Balance based on kill/death ratio
+#   - "KDA": Balance based on kill/death/assist ratio
+#   - "Score": Balance based on in-game score
+#   - "WinRate": Balance based on round win percentage
+#   - "ScrambleRandom": Completely randomize teams
+#   - "ScrambleSkill": Distribute players evenly by skill
+BalanceMode = "KDA"
+
+# How large a skill difference must be to trigger balancing (percentage)
+# Lower values = more frequent balancing
+SkillDifferenceThreshold = 20.0
+
+# Whether to reset player statistics after a scramble
+ResetStatsAfterScramble = true
+
+# Number of consecutive rounds one team must win to trigger auto-scramble
+# Set to 0 to disable auto-scramble
+AutoScrambleAfterWinStreak = 0
+
+# Number of consecutive rounds one team must lose to trigger skill boosting
+# Set to 0 to disable boosting
+BoostAfterLoseStreak = 5
+
+# Percentage to boost the losing team's skill threshold by when balancing
+# Higher values give the losing team higher skilled players when balancing
+BoostPercentage = 30
+
+# ======================================
+# Chat Message Settings
+# ======================================
+[Messages]
+# Whether to announce team balancing events in chat
+AnnounceBalancing = true
+
+# Whether to send private messages to players who are switched
+NotifySwitchedPlayers = true
+
+# Whether to explain the reason for the balance
+ExplainBalanceReason = true
+
+# ======================================
+# Admin Settings
+# ======================================
+[Admin]
+# Whether to exclude admins from automatic team switches
+ExcludeAdmins = false
+
+# Admin flag that grants exemption from team switching
+AdminExemptFlag = "@css/ban"

@@ -1,6 +1,18 @@
 {
-    "teams.scrambled": "{0} Drużyny zostały wymieszane.",
-    "teams.balanced": "{0} Drużyny zostały zbalansowane.",
-    "teams.balance.not.needed": "{0} Rozmiary drużyn są równe. Balans nie jest potrzebny.",
-    "teams.join.block": "{0} Nie możesz przejść do tej drużyny, ponieważ naruszyłoby to balans drużyn."
+    "jointeam.imbalance": "{0} {red}Nie możesz dołączyć{default} do tej drużyny, ponieważ spowoduje to brak balansu.",
+    "jointeam.suggest": "{0} Spróbuj dołączyć do drużyny {green}{1}{default} by zachować balans.",
+    "jointeam.forced": "{0} Zostałeś przeniesiony do drużyny {green}{1}{default} aby zachować balans.",
+    "jointeam.delayed": "{0} Zostaniesz przeniesiony do zbalansowanej drużyny {purple}po śmierci{default}.",
+    
+    "balance.scramble.winstreak": "{0} Drużyny zostaną {gold}przemieszane{default} po tym, jak {green}{1}{default} wygrali {lightred}{2}{default} rund z rzędu!",
+    "balance.boost.losestreak": "{0} Drużyna {red}{1}{default} przegrała {lightred}{2}{default} rund z rzędu. {green}Balans przydzieli im lepszych graczy{default} w następnej rundzie.",
+    "balance.size.moved": "{0} Przeniesiono {green}{1}{default} graczy dla zachowania balansu liczebnego drużyn.",
+    "balance.skill.swapped": "{0} Zamieniono {green}{1}{default} par graczy dla zbalansowania umiejętności drużyn.",
+    "balance.force": "{0} {red}Wykryto krytyczny brak balansu drużyn{default}. Wymuszono przeniesienie {green}{1}{default} graczy.",
+    
+    "scramble.random": "{0} Drużyny zostały {gold}losowo przemieszane{default} dla lepszego balansu!",
+    "scramble.skill": "{0} Drużyny zostały {gold}przemieszane według umiejętności{default} dla lepszego balansu!",
+    
+    "player.moved.t": "{0} Zostałeś przeniesiony do drużyny {orange}Terrorystów{default} aby zachować balans.",
+    "player.moved.ct": "{0} Zostałeś przeniesiony do drużyny {blue}Antyterrorystów{default} aby zachować balans."
 }
