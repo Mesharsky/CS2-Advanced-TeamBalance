@@ -31,7 +31,7 @@ namespace AdvancedTeamBalance
 
             if (includePrefix)
             {
-                var prefix = Plugin.Instance?.Config.General.PluginTag ?? "{red}[TeamBalance]{default}";
+                var prefix = Plugin.Instance?.Config.General.PluginTag.ReplaceColorTags();
                 sanitizedArgs = [prefix, .. sanitizedArgs];
             }
 
