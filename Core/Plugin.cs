@@ -10,7 +10,7 @@ namespace AdvancedTeamBalance
         public override string ModuleName => "Advanced Team Balance";
         public override string ModuleAuthor => "Mesharsky";
         public override string ModuleDescription => "Provides advanced team balancing for CS2 servers";
-        public override string ModuleVersion => "5.0.0";
+        public override string ModuleVersion => "5.0.1";
         
         public PluginConfig Config { get; set; } = new();
         
@@ -60,7 +60,16 @@ namespace AdvancedTeamBalance
             RegisterEventHandler<EventPlayerConnectFull>(EventManager.OnPlayerConnectFull);
             RegisterEventHandler<EventPlayerDisconnect>(EventManager.OnPlayerDisconnect);
             RegisterEventHandler<EventPlayerDeath>(EventManager.OnPlayerDeath);
-            RegisterEventHandler<EventRoundPrestart>(EventManager.OnRoundStart);
+            RegisterEventHandler<EventRoundPrestart>((@event, info) => 
+            {
+                EventManager.SetRoundPreStartPhase(true);
+                
+                var result = EventManager.OnRoundStart(@event, info);
+                
+                EventManager.SetRoundPreStartPhase(false);
+                
+                return result;
+            });
             RegisterEventHandler<EventRoundEnd>(EventManager.OnRoundEnd);
             RegisterEventHandler<EventPlayerSpawn>(EventManager.OnPlayerSpawn);
 

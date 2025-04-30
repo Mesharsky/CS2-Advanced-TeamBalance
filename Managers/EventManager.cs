@@ -100,6 +100,11 @@ namespace AdvancedTeamBalance
             PlayerManager.SyncPlayerData();
             UpdatePlayerRoundCounts();
             
+            foreach (var player in PlayerManager.GetAllPlayers())
+            {
+                player.IsAlive = false;
+            }
+            
             if (_config.TeamSwitch.BalanceTriggers.Contains("OnRoundStart") && 
                 (!IsWarmup() || _config.TeamSwitch.BalanceDuringWarmup) && 
                 HasEnoughPlayers())
@@ -339,7 +344,7 @@ namespace AdvancedTeamBalance
                 var controller = controllers.FirstOrDefault(p => p.IsValid && !p.IsBot && p.SteamID == player.SteamId);
                 if (controller != null && controller.TeamNum != (int)CsTeam.Terrorist)
                 {
-                    if (controller.PawnIsAlive)
+                    if (controller.PawnIsAlive && !IsRoundPreStartPhase())
                     {
                         if (_config.General.EnableDebug)
                         {
@@ -362,7 +367,7 @@ namespace AdvancedTeamBalance
                 var controller = controllers.FirstOrDefault(p => p.IsValid && !p.IsBot && p.SteamID == player.SteamId);
                 if (controller != null && controller.TeamNum != (int)CsTeam.CounterTerrorist)
                 {
-                    if (controller.PawnIsAlive)
+                    if (controller.PawnIsAlive && !IsRoundPreStartPhase())
                     {
                         if (_config.General.EnableDebug)
                         {
@@ -380,6 +385,24 @@ namespace AdvancedTeamBalance
                 }
             }
         }
+        
+        private static bool _isRoundPreStartPhase = false;
+        
+        /// <summary>
+        /// Returns true if we're currently in the round prestart phase
+        /// </summary>
+        public static bool IsRoundPreStartPhase()
+        {
+            return _isRoundPreStartPhase;
+        }
+        
+        /// <summary>
+        /// Sets the round prestart phase flag
+        /// </summary>
+        public static void SetRoundPreStartPhase(bool value)
+        {
+            _isRoundPreStartPhase = value;
+        }
 
         /// <summary>
         /// Resets all map-related statistics and counters when map changes
@@ -388,6 +411,7 @@ namespace AdvancedTeamBalance
         {
             _tWinStreak = 0;
             _ctWinStreak = 0;
+            _isRoundPreStartPhase = false;
             
             _gameRulesEntity = null;
             

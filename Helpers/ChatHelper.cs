@@ -27,23 +27,31 @@ namespace AdvancedTeamBalance
                 return;
             }
 
-            var sanitizedArgs = args.Select(arg => arg).ToArray();
+            var sanitizedArgs = new List<object>();
 
             if (includePrefix)
             {
                 var prefix = Plugin.Instance?.Config.General.PluginTag.ReplaceColorTags();
-                sanitizedArgs = [prefix, .. sanitizedArgs];
+                sanitizedArgs.Add(prefix!);
+            }
+
+            // Add the rest of the arguments
+            foreach (var arg in args)
+            {
+                sanitizedArgs.Add(arg);
             }
 
             try
             {
-                var formattedMessage = Plugin._localizer.ForPlayer(player, key, sanitizedArgs);
+                var formattedMessage = Plugin._localizer.ForPlayer(player, key, [.. sanitizedArgs]);
                 player.PrintToChat(formattedMessage);
             }
             catch (FormatException fe)
             {
                 Console.WriteLine($"[AdvancedTeamBalance][ChatHelper] ERROR: Formatting failed for key: {key} | Args: {string.Join(", ", sanitizedArgs)}");
                 Console.WriteLine($"[AdvancedTeamBalance][ChatHelper] Exception: {fe.Message}");
+                
+                Console.WriteLine($"[AdvancedTeamBalance][ChatHelper] Raw translation format: {Plugin._localizer[key]}");
             }
             catch (Exception ex)
             {

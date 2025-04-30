@@ -23,7 +23,7 @@ EnableDebug = false
 #   - "OnPlayerJoin": Balance when a player joins
 #   - "OnPlayerDisconnect": Balance when a player leaves
 #   - "OnRoundEnd": Balance when round ends.
-BalanceTriggers = ["OnRoundStart", "OnPlayerJoin", "OnPlayerDisconnect"]
+BalanceTriggers = ["OnRoundStart", "OnPlayerDisconnect"]
 
 # Maximum allowed difference in team sizes
 # This is always enforced with highest priority
@@ -54,7 +54,7 @@ BalanceMode = "KDA"
 
 # How large a skill difference must be to trigger balancing (percentage)
 # Lower values = more frequent balancing
-SkillDifferenceThreshold = 20.0
+SkillDifferenceThreshold = 30.0
 
 # Whether to reset player statistics after a scramble
 ResetStatsAfterScramble = true
@@ -69,7 +69,7 @@ BoostAfterLoseStreak = 5
 
 # Percentage to boost the losing team's skill threshold by when balancing
 # Higher values give the losing team higher skilled players when balancing
-BoostPercentage = 30
+BoostPercentage = 40
 
 # ======================================
 # Chat Message Settings

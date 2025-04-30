@@ -76,16 +76,35 @@ namespace AdvancedTeamBalance
                 return new BalanceResult(0, 0, 0);
             }
             
-            // Track statistics for return value
             int swapsMade = 0;
 
             // First, filter out ineligible players
-            List<Player> eligibleTPlayers = GetEligiblePlayers(tPlayers);
-            List<Player> eligibleCTPlayers = GetEligiblePlayers(ctPlayers);
+            bool isRoundPrestart = EventManager.IsRoundPreStartPhase();
+            List<Player> eligibleTPlayers = GetEligiblePlayers(tPlayers, isRoundPrestart);
+            List<Player> eligibleCTPlayers = GetEligiblePlayers(ctPlayers, isRoundPrestart);
             
             if (logDetails && _config.General.EnableDebug)
             {
                 Console.WriteLine($"[AdvancedTeamBalance] Eligible players - T: {eligibleTPlayers.Count}, CT: {eligibleCTPlayers.Count}");
+                
+                if (eligibleTPlayers.Count == 0 || eligibleCTPlayers.Count == 0)
+                {
+                    Console.WriteLine($"[AdvancedTeamBalance] Not enough eligible players. IsRoundPrestart: {isRoundPrestart}");
+                    
+                    // Debug why players are ineligible
+                    int exemptT = tPlayers.Count(p => p.IsExemptFromSwitching);
+                    int immunityT = tPlayers.Count(p => p.ImmunityTimeRemaining > 0);
+                    int tooNewT = tPlayers.Count(p => p.RoundsOnCurrentTeam < _config.TeamSwitch.MinRoundsBeforeSwitch);
+                    int aliveT = tPlayers.Count(p => p.IsAlive);
+                    
+                    int exemptCT = ctPlayers.Count(p => p.IsExemptFromSwitching);
+                    int immunityCT = ctPlayers.Count(p => p.ImmunityTimeRemaining > 0);
+                    int tooNewCT = ctPlayers.Count(p => p.RoundsOnCurrentTeam < _config.TeamSwitch.MinRoundsBeforeSwitch);
+                    int aliveCT = ctPlayers.Count(p => p.IsAlive);
+                    
+                    Console.WriteLine($"[AdvancedTeamBalance] T ineligible: Exempt={exemptT}, Immunity={immunityT}, TooNew={tooNewT}, Alive={aliveT}");
+                    Console.WriteLine($"[AdvancedTeamBalance] CT ineligible: Exempt={exemptCT}, Immunity={immunityCT}, TooNew={tooNewCT}, Alive={aliveCT}");
+                }
             }
 
             // First, balance team sizes if needed
@@ -99,8 +118,8 @@ namespace AdvancedTeamBalance
                 if (sizeDiff <= maxTeamSizeDifference)
                 {
                     // Re-calculate eligible players after team size balancing
-                    eligibleTPlayers = GetEligiblePlayers(tPlayers);
-                    eligibleCTPlayers = GetEligiblePlayers(ctPlayers);
+                    eligibleTPlayers = GetEligiblePlayers(tPlayers, isRoundPrestart);
+                    eligibleCTPlayers = GetEligiblePlayers(ctPlayers, isRoundPrestart);
                     
                     // Calculate initial team strengths
                     double tStrength = CalculateTeamStrength(tPlayers, balanceMode);
@@ -147,11 +166,44 @@ namespace AdvancedTeamBalance
                     }
                     
                     // If team strengths are already balanced enough, we're done
-                    if (initialDifference <= strengthThreshold && losingTeam == CsTeam.None)
+                    double weakerTeamStrength = Math.Min(tStrength, ctStrength);
+                    if ((initialDifference <= strengthThreshold || 
+                        (weakerTeamStrength > 0 && initialDifference / weakerTeamStrength <= strengthThreshold)) 
+                        && losingTeam == CsTeam.None)
                     {
                         if (logDetails && _config.General.EnableDebug)
                         {
                             Console.WriteLine($"[AdvancedTeamBalance] Teams are already balanced within threshold ({initialDifference:F2} <= {strengthThreshold})");
+                        }
+                        return new BalanceResult(initialDifference, 0, playersMoved);
+                    }
+                    
+                    // If the losing team needs boosting, always try to make a swap
+                    // regardless of whether there are eligible players
+                    if (losingTeam != CsTeam.None)
+                    {
+                        // If no eligible players but we have a losing team that needs boosting,
+                        // try a forced swap
+                        if ((eligibleTPlayers.Count == 0 || eligibleCTPlayers.Count == 0) && isRoundPrestart)
+                        {
+                            // This is round prestart, so consider all non-exempt players eligible
+                            eligibleTPlayers = tPlayers.Where(p => !p.IsExemptFromSwitching).ToList();
+                            eligibleCTPlayers = ctPlayers.Where(p => !p.IsExemptFromSwitching).ToList();
+                            
+                            if (logDetails && _config.General.EnableDebug)
+                            {
+                                Console.WriteLine($"[AdvancedTeamBalance] Forcing eligibility for boosting losing team during prestart");
+                                Console.WriteLine($"[AdvancedTeamBalance] Forced eligible - T: {eligibleTPlayers.Count}, CT: {eligibleCTPlayers.Count}");
+                            }
+                        }
+                    }
+                    
+                    // Check again if we have eligible players
+                    if (eligibleTPlayers.Count == 0 || eligibleCTPlayers.Count == 0)
+                    {
+                        if (logDetails && _config.General.EnableDebug)
+                        {
+                            Console.WriteLine($"[AdvancedTeamBalance] Still not enough eligible players after eligibility override attempt");
                         }
                         return new BalanceResult(initialDifference, 0, playersMoved);
                     }
@@ -186,6 +238,16 @@ namespace AdvancedTeamBalance
                         weakerTeam = tPlayers;
                         eligibleStrongerTeam = eligibleCTPlayers;
                         eligibleWeakerTeam = eligibleTPlayers;
+                    }
+                    
+                    // Final check before attempting to balance team skill
+                    if (eligibleStrongerTeam.Count == 0 || eligibleWeakerTeam.Count == 0)
+                    {
+                        if (logDetails && _config.General.EnableDebug)
+                        {
+                            Console.WriteLine($"[AdvancedTeamBalance] Cannot balance team skill: not enough eligible players in stronger/weaker teams");
+                        }
+                        return new BalanceResult(initialDifference, 0, playersMoved);
                     }
                     
                     // Perform skill balancing with potential boost
@@ -225,9 +287,19 @@ namespace AdvancedTeamBalance
         /// <summary>
         /// Get players eligible for team switching
         /// </summary>
-        private static List<Player> GetEligiblePlayers(List<Player> players)
+        private static List<Player> GetEligiblePlayers(List<Player> players, bool isRoundPrestart = false)
         {
             int minRoundsBeforeSwitch = _config.TeamSwitch.MinRoundsBeforeSwitch;
+            
+            // During round prestart, we can ignore the alive check
+            if (isRoundPrestart)
+            {
+                return [.. players.Where(p => !p.IsExemptFromSwitching && 
+                                            p.ImmunityTimeRemaining <= 0 && 
+                                            p.RoundsOnCurrentTeam >= minRoundsBeforeSwitch)];
+            }
+            
+            // Normal eligibility check
             return [.. players.Where(p => p.CanBeSwitched(minRoundsBeforeSwitch))];
         }
         
@@ -338,7 +410,7 @@ namespace AdvancedTeamBalance
             bool logDetails)
         {
             int swapsMade = 0;
-            int maxSwaps = 2;
+            int maxSwaps = Math.Min(4, Math.Max(eligibleStrongerTeam.Count, eligibleWeakerTeam.Count));
             
             // If no eligible players, can't balance
             if (eligibleStrongerTeam.Count == 0 || eligibleWeakerTeam.Count == 0)
@@ -453,13 +525,23 @@ namespace AdvancedTeamBalance
             string balanceMode,
             CsTeam losingTeam)
         {
+            if (eligibleStrongerTeam.Count == 0 || eligibleWeakerTeam.Count == 0)
+            {
+                return null;
+            }
+            
             (Player, Player, double)? bestSwap = null;
             double bestDiff = double.MaxValue;
             
-            // Determine if we need to prioritize boosting the losing team
             bool boostingLosingTeam = losingTeam != CsTeam.None;
+            
             CsTeam weakerTeamId = eligibleWeakerTeam[0].Team;
             bool weakerTeamIsLosing = weakerTeamId == losingTeam;
+            
+            // Get current strength difference for comparison
+            double currentStrongerTeamStrength = CalculateTeamStrength(allStrongerTeam, balanceMode);
+            double currentWeakerTeamStrength = CalculateTeamStrength(allWeakerTeam, balanceMode);
+            double currentDiff = Math.Abs(currentStrongerTeamStrength - currentWeakerTeamStrength);
             
             foreach (var player1 in eligibleStrongerTeam)
             {
@@ -489,17 +571,25 @@ namespace AdvancedTeamBalance
                     double newStrongerTeamStrength = CalculateTeamStrength(newStrongerTeam, balanceMode);
                     double newWeakerTeamStrength = CalculateTeamStrength(newWeakerTeam, balanceMode);
                     
-                    // Calculate new strength difference
                     double newDiff = Math.Abs(newStrongerTeamStrength - newWeakerTeamStrength);
                     
-                    // If we're boosting the losing team, give preference to swaps that benefit the losing team
+                    if (newStrongerTeam.Count != newWeakerTeam.Count)
+                    {
+                        newDiff *= 1.0 + (0.1 * Math.Abs(newStrongerTeam.Count - newWeakerTeam.Count));
+                    }
+                    
+                    double minNewStrength = Math.Min(newStrongerTeamStrength, newWeakerTeamStrength);
+                    if (minNewStrength > 0)
+                    {
+                        double relativeDiff = newDiff / minNewStrength;
+                        
+                        newDiff = (newDiff * 0.6) + (relativeDiff * 0.4);
+                    }
+                    
                     if (boostingLosingTeam && weakerTeamIsLosing)
                     {
-                        // Apply a bonus to the score for swaps that help the losing team
                         if (player1Value > player2Value)
                         {
-                            // This swap gives a better player to the losing team
-                            // Reduce the effective difference to prioritize this swap
                             newDiff *= 0.8;
                         }
                     }
@@ -511,6 +601,11 @@ namespace AdvancedTeamBalance
                         bestSwap = (player1, player2, newDiff);
                     }
                 }
+            }
+            
+            if (bestSwap != null && bestDiff >= currentDiff)
+            {
+                return null;
             }
             
             return bestSwap;
@@ -531,7 +626,10 @@ namespace AdvancedTeamBalance
             }
             
             // Filter to eligible players (those not exempt and not alive)
-            var eligiblePlayers = allPlayers.Where(p => !p.IsExemptFromSwitching && !p.IsAlive).ToList();
+            // If during round prestart, ignore alive status
+            var eligiblePlayers = EventManager.IsRoundPreStartPhase() 
+                ? allPlayers.Where(p => !p.IsExemptFromSwitching).ToList() 
+                : allPlayers.Where(p => !p.IsExemptFromSwitching && !p.IsAlive).ToList();
             
             if (eligiblePlayers.Count < 4)
             {
@@ -597,8 +695,9 @@ namespace AdvancedTeamBalance
                 return false;
             }
             
-            // Filter to eligible players (those not exempt and not alive)
-            var eligiblePlayers = allPlayers.Where(p => !p.IsExemptFromSwitching && !p.IsAlive).ToList();
+            var eligiblePlayers = EventManager.IsRoundPreStartPhase() 
+                ? allPlayers.Where(p => !p.IsExemptFromSwitching).ToList() 
+                : allPlayers.Where(p => !p.IsExemptFromSwitching && !p.IsAlive).ToList();
             
             if (eligiblePlayers.Count < 4)
             {
@@ -682,24 +781,31 @@ namespace AdvancedTeamBalance
             if (diff <= maxDiff)
                 return 0;
                 
-            // Determine which team has more players
             bool tIsLarger = tCount > ctCount;
             var sourceTeam = tIsLarger ? tPlayers : ctPlayers;
             var targetTeam = tIsLarger ? ctPlayers : tPlayers;
             
-            // Calculate how many to move
             int playersToMove = (diff - maxDiff + 1) / 2;
             
-            // Sort by rounds on team (move newest players first) and only include non-alive players
+            bool ignoreAliveStatus = EventManager.IsRoundPreStartPhase();
+            
             var candidatesToMove = sourceTeam
-                .Where(p => !p.IsExemptFromSwitching && !p.IsAlive) // Respect admin exemption and alive status
+                .Where(p => !p.IsExemptFromSwitching && (ignoreAliveStatus || !p.IsAlive))
                 .OrderBy(p => p.RoundsOnCurrentTeam)
                 .ToList();
             
             if (candidatesToMove.Count == 0)
+            {
+                if (logDetails && _config.General.EnableDebug)
+                {
+                    Console.WriteLine("[AdvancedTeamBalance] No candidates for forced balance found");
+                    int exempt = sourceTeam.Count(p => p.IsExemptFromSwitching);
+                    int alive = sourceTeam.Count(p => p.IsAlive);
+                    Console.WriteLine($"[AdvancedTeamBalance] Source team players that are: Exempt={exempt}, Alive={alive}");
+                }
                 return 0;
+            }
                 
-            // Move players
             int playersMoved = 0;
             for (int i = 0; i < Math.Min(playersToMove, candidatesToMove.Count); i++)
             {
