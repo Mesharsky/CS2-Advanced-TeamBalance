@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Core;
 
 namespace AdvancedTeamBalance
@@ -19,7 +20,7 @@ namespace AdvancedTeamBalance
         /// <summary>
         /// Tag shown in chat messages
         /// </summary>
-        public string PluginTag { get; set; } = "{red}[TeamBalance]{default}";
+        public string PluginTag { get; set; } = $"{ChatColors.Red}[TeamBalance]{ChatColors.Default}";
         
         /// <summary>
         /// Minimum number of players required for balancing to activate
