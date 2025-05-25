@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} Tu {red}ne peux pas rejoindre{default} cette équipe car cela déséquilibrerait les équipes.",
     "jointeam.suggest": "{0} Essaye plutôt de rejoindre {green}{1}{default} pour maintenir l'équilibre des équipes.",
@@ -16,6 +19,7 @@
 
     "player.moved.t": "{0} Tu as été déplacé vers les {orange}Terroriste{default} pour maintenir l'équilibre des équipes.",
     "player.moved.ct": "{0} Tu as été déplacé vers les {blue}Anti-Terroriste{default} pour maintenir l'équilibre des équipes."
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} Tu {red}ne peux pas rejoindre{default} cette équipe car cela déséquilibrerait les équipes.",
@@ -35,4 +39,6 @@
     "player.moved.t": "{0} Tu as été déplacé vers les {orange}Terroriste{default} pour maintenir l'équilibre des équipes.",
     "player.moved.ct": "{0} Tu as été déplacé vers les {blue}Anti-Terroriste{default} pour maintenir l'équilibre des équipes."
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)
 }

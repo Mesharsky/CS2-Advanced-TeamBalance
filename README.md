@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 # Advanced Team Balance
 
 <div align="center">
@@ -75,6 +78,7 @@ Happy balancing! 🎮
 ## Wanna donate?
 
 Well i hope you do. https://paypal.me/mesharskyh2k
+<<<<<<< HEAD
 =======
 # Advanced Team Balance
 
@@ -145,3 +149,5 @@ Happy balancing! 🎮
 
 Well i hope you do. https://paypal.me/mesharskyh2k
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

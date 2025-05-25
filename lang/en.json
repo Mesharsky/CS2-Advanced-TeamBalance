@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} You {red}cannot join that team{default} as it would cause team imbalance.",
     "jointeam.suggest": "{0} Try joining the {green}{1}{default} team to maintain balance.",
@@ -18,6 +21,7 @@
     "player.moved.t": "{0} You have been moved to the {orange}Terrorist{default} team to maintain balance.",
     "player.moved.ct": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to maintain balance."
 }
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} You {red}cannot join that team{default} as it would cause team imbalance.",
@@ -38,3 +42,5 @@
     "player.moved.ct": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to maintain balance."
 }
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

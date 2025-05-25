@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 using System;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
@@ -453,6 +456,7 @@ namespace AdvancedTeamBalance
         }
     }
 }
+<<<<<<< HEAD
 =======
 using System;
 using CounterStrikeSharp.API;
@@ -894,3 +898,5 @@ namespace AdvancedTeamBalance
     }
 }
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

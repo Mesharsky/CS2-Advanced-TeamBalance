@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} {red}No puedes unirte{default} a ese equipo ya que causaría un desequilibrio.",
     "jointeam.suggest": "{0} Intenta unirte al equipo {green}{1}{default} para mantener el balance.",
@@ -16,6 +19,7 @@
     
     "player.moved.t": "{0} Has sido movido al equipo {orange}Terrorista{default} para mantener el balance.",
     "player.moved.ct": "{0} Has sido movido al equipo {blue}Antiterrorista{default} para mantener el balance."
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} {red}No puedes unirte{default} a ese equipo ya que causaría un desequilibrio.",
@@ -35,4 +39,6 @@
     "player.moved.t": "{0} Has sido movido al equipo {orange}Terrorista{default} para mantener el balance.",
     "player.moved.ct": "{0} Has sido movido al equipo {blue}Antiterrorista{default} para mantener el balance."
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)
 }

@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace AdvancedTeamBalance
@@ -715,6 +718,7 @@ namespace AdvancedTeamBalance
         public int PlayersMoved { get; } = playersMoved;
     }
 }
+<<<<<<< HEAD
 =======
 using CounterStrikeSharp.API.Modules.Utils;
 
@@ -1568,3 +1572,5 @@ namespace AdvancedTeamBalance
     }
 }
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

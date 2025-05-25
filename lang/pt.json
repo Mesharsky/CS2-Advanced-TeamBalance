@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} Você {red}não pode entrar{default} nesse time, pois causaria desequilíbrio.",
     "jointeam.suggest": "{0} Tente entrar no time {green}{1}{default} para manter o equilíbrio.",
@@ -16,6 +19,7 @@
     
     "player.moved.t": "{0} Você foi movido para o time {orange}Terrorista{default} para manter o equilíbrio.",
     "player.moved.ct": "{0} Você foi movido para o time {blue}Contra-Terrorista{default} para manter o equilíbrio."
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} Você {red}não pode entrar{default} nesse time, pois causaria desequilíbrio.",
@@ -35,4 +39,6 @@
     "player.moved.t": "{0} Você foi movido para o time {orange}Terrorista{default} para manter o equilíbrio.",
     "player.moved.ct": "{0} Você foi movido para o time {blue}Contra-Terrorista{default} para manter o equilíbrio."
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)
 }

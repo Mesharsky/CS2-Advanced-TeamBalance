@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} Takım dengesizliğine neden olacağı için bu takıma {red}katılamazsın{default}.",
     "jointeam.suggest": "{0} Dengeyi korumak için {green}{1}{default} takımına katılmayı dene.",
@@ -17,6 +20,7 @@
     "player.moved.t": "{0} Dengeyi korumak için {orange}Terörist{default} takımına taşındın.",
     "player.moved.ct": "{0} Dengeyi korumak için {blue}Anti-Terörist{default} takımına taşındın."
 }
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} Takım dengesizliğine neden olacağı için bu takıma {red}katılamazsın{default}.",
@@ -37,3 +41,5 @@
     "player.moved.ct": "{0} Dengeyi korumak için {blue}Anti-Terörist{default} takımına taşındın."
 }
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

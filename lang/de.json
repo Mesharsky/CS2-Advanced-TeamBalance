@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 {
     "jointeam.imbalance": "{0} Sie {red}können diesem Team nicht beitreten{default}, da dies das Gleichgewicht stören würde.",
     "jointeam.suggest": "{0} Versuchen Sie stattdessen, dem Team {green}{1}{default} beizutreten, um die Balance zu wahren.",
@@ -17,6 +20,7 @@
     "player.moved.t": "{0} Sie wurden zum {orange}Terroristen-Team{default} verschoben, um die Balance zu wahren.",
     "player.moved.ct": "{0} Sie wurden zum {blue}Anti-Terroristen-Team{default} verschoben, um die Balance zu wahren."
 }
+<<<<<<< HEAD
 =======
 {
     "jointeam.imbalance": "{0} Sie {red}können diesem Team nicht beitreten{default}, da dies das Gleichgewicht stören würde.",
@@ -37,3 +41,5 @@
     "player.moved.ct": "{0} Sie wurden zum {blue}Anti-Terroristen-Team{default} verschoben, um die Balance zu wahren."
 }
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)

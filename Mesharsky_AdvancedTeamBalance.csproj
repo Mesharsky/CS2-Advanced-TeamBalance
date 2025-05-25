@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 182a34f (Merge local)
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Condition=" '$(EAZFUSCATOR_NET_HOME)' != '' and Exists('$(EAZFUSCATOR_NET_HOME)\Integration\MSBuild\Eazfuscator.NET.targets') " Project="$(EAZFUSCATOR_NET_HOME)\Integration\MSBuild\Eazfuscator.NET.targets" />
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -28,6 +31,7 @@
         <None Update="Config\**\*.*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+<<<<<<< HEAD
 =======
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Condition=" '$(EAZFUSCATOR_NET_HOME)' != '' and Exists('$(EAZFUSCATOR_NET_HOME)\Integration\MSBuild\Eazfuscator.NET.targets') " Project="$(EAZFUSCATOR_NET_HOME)\Integration\MSBuild\Eazfuscator.NET.targets" />
@@ -59,4 +63,6 @@
   </ItemGroup>
 
 >>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
+=======
+>>>>>>> 182a34f (Merge local)
 </Project>
