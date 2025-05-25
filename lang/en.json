@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "jointeam.imbalance": "{0} You {red}cannot join that team{default} as it would cause team imbalance.",
     "jointeam.suggest": "{0} Try joining the {green}{1}{default} team to maintain balance.",
@@ -17,3 +18,23 @@
     "player.moved.t": "{0} You have been moved to the {orange}Terrorist{default} team to maintain balance.",
     "player.moved.ct": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to maintain balance."
 }
+=======
+{
+    "jointeam.imbalance": "{0} You {red}cannot join that team{default} as it would cause team imbalance.",
+    "jointeam.suggest": "{0} Try joining the {green}{1}{default} team to maintain balance.",
+    "jointeam.forced": "{0} You have been moved to the {green}{1}{default} team to maintain balance.",
+    "jointeam.delayed": "{0} You will be moved to a balanced team {purple}when you die{default}.",
+    
+    "balance.scramble.winstreak": "{0} Teams will be {gold}scrambled{default} after {green}{1}{default} won {lightred}{2}{default} rounds in a row!",
+    "balance.boost.losestreak": "{0} {red}{1}{default} team has lost {lightred}{2}{default} rounds in a row. {green}Balance will assign better players to them{default} in the next round.",
+    "balance.size.moved": "{0} Moved {green}{1}{default} player{2} to maintain team size balance.",
+    "balance.skill.swapped": "{0} Swapped {green}{1}{default} player pair{2} to balance team skill levels.",
+    "balance.force": "{0} {red}Critical team imbalance detected{default}. Forced {green}{1}{default} players to switch teams.",
+    
+    "scramble.random": "{0} Teams have been {gold}randomly scrambled{default} for better balance!",
+    "scramble.skill": "{0} Teams have been {gold}scrambled based on skill{default} for better balance!",
+    
+    "player.moved.t": "{0} You have been moved to the {orange}Terrorist{default} team to maintain balance.",
+    "player.moved.ct": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to maintain balance."
+}
+>>>>>>> 74fc461956bce7b38451c220f391a210b6af4d41
