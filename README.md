@@ -60,17 +60,8 @@ To add a new language or modify existing translations, edit the files in the `la
 
 Admins with the `@css/ban` flag (configurable) are exempted from automatic team switching.
 
-## Credits
-
-- **Author**: Mesharsky
-- **Version**: 5.0.0
-
 ## Need Help?
 
 If you encounter any issues or have questions, please open an issue on the GitHub repository.
 
 Happy balancing! 🎮
-
-## Wanna donate?
-
-Well i hope you do. https://paypal.me/mesharskyh2k
