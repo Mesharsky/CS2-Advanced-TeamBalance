@@ -1,0 +1,18 @@
+{
+    "jointeam.imbalance": "{0} Você {red}não pode entrar{default} nesse time, pois causaria desequilíbrio.",
+    "jointeam.suggest": "{0} Tente entrar no time {green}{1}{default} para manter o equilíbrio.",
+    "jointeam.forced": "{0} Você foi movido para o time {green}{1}{default} para manter o equilíbrio.",
+    "jointeam.delayed": "{0} Você será movido para um time equilibrado {purple}quando morrer{default}.",
+    
+    "balance.scramble.winstreak": "{0} Os times serão {gold}embaralhados{default} depois que os {green}{1}{default} venceram {lightred}{2}{default} rodadas seguidas!",
+    "balance.boost.losestreak": "{0} O time {red}{1}{default} perdeu {lightred}{2}{default} rodadas seguidas. {green}O balanceamento atribuirá melhores jogadores a eles{default} na próxima rodada.",
+    "balance.size.moved": "{0} {green}{1}{default} jogador{2} movido{2} para manter o equilíbrio numérico dos times.",
+    "balance.skill.swapped": "{0} {green}{1}{default} par{2} de jogadores trocado{2} para equilibrar os níveis de habilidade.",
+    "balance.force": "{0} {red}Desequilíbrio crítico de times detectado{default}. {green}{1}{default} jogadores foram forçados a trocar de time.",
+    
+    "scramble.random": "{0} Os times foram {gold}embaralhados aleatoriamente{default} para melhor equilíbrio!",
+    "scramble.skill": "{0} Os times foram {gold}embaralhados com base na habilidade{default} para melhor equilíbrio!",
+    
+    "player.moved.t": "{0} Você foi movido para o time {orange}Terrorista{default} para manter o equilíbrio.",
+    "player.moved.ct": "{0} Você foi movido para o time {blue}Contra-Terrorista{default} para manter o equilíbrio."
+}

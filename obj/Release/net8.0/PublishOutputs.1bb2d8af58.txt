@@ -1,0 +1,10 @@
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\de.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\en.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\es.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\fr.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\pl.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\pt.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\ru.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\lang\tr.json
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\Mesharsky_AdvancedTeamBalance.dll
+C:\Users\Mesha\Desktop\Mesharsky_Pluginy\Mesharsky_AdvancedTeamBalance\bin\Mesharsky_AdvancedTeamBalance\Microsoft.Extensions.Localization.Abstractions.dll
