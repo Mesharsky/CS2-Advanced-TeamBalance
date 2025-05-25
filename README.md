@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 182a34f (Merge local)
 # Advanced Team Balance
 
 <div align="center">
