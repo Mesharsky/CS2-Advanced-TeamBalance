@@ -219,7 +219,7 @@ namespace AdvancedTeamBalance
                     
                     if (_config.General.EnableDebug)
                     {
-                        Console.WriteLine($"[AdvancedTeamBalance] Reset stats for player: {player.Name}");
+                        Console.WriteLine($"[AdvancedTeamBalance] Reset stats for player: {player.Name} .");
                     }
                 }
             }
