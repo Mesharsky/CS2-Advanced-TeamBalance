@@ -74,13 +74,6 @@ BoostPercentage = 30
 # Enable progressive boost system where boost increases with longer losing streaks
 ProgressiveBoost = false
 
-# Progressive boost tiers: rounds lost = boost percentage
-# Example below: 3 rounds = 10% boost, 5 rounds = 20% boost, 7 rounds = 30% boost
-[Balancing.BoostTiers]
-3 = 10
-5 = 20
-7 = 30
-
 # If true, balancing logic will only consider team sizes and skip all other algorithms (KD, KDA, Score, etc.).
 # MaxTeamSizeDifference will still be respected.
 OnlyBalanceByTeamSize = false
@@ -90,6 +83,13 @@ EnableBalanceHistory = false
 
 # Show boost notification when actually applied (not just when triggered)
 ShowBoostOnApplication = true
+
+# Progressive boost tiers: rounds lost = boost percentage
+# Example below: 3 rounds = 10% boost, 5 rounds = 20% boost, 7 rounds = 30% boost
+[Balancing.BoostTiers]
+3 = 10
+5 = 20
+7 = 30
 
 # ======================================
 # Chat Message Settings
