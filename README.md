@@ -63,14 +63,8 @@ Admins with the `@css/ban` flag (configurable) are exempted from automatic team 
 ## Credits
 
 - **Author**: Mesharsky
-- **Version**: 5.0.0
+- **Version**: 5.2.0 - beta
 
 ## Need Help?
 
 If you encounter any issues or have questions, please open an issue on the GitHub repository.
-
-Happy balancing! 🎮
-
-## Wanna donate?
-
-Well i hope you do. https://paypal.me/mesharskyh2k
