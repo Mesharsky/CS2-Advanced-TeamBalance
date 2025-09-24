@@ -1,0 +1,37 @@
+{
+    "jointeam.imbalance": "{0} You {red}cannot join that team{default} as it would cause team imbalance.",
+    "jointeam.suggest": "{0} Try joining the {green}{1}{default} team to maintain balance.",
+    "jointeam.forced": "{0} You have been moved to the {green}{1}{default} team to maintain balance.",
+    "jointeam.delayed": "{0} You will be moved to a balanced team {purple}when you die{default}.",
+    "jointeam.already_balanced": "{0} You are already on the {green}correct team{default} for balance.",
+    
+    "balance.scramble.winstreak": "{0} Teams will be {gold}scrambled{default} after {green}{1}{default} won {lightred}{2}{default} rounds in a row!",
+    "balance.boost.losestreak": "{0} {red}{1}{default} team has lost {lightred}{2}{default} rounds in a row. {green}Balance will assign better players to them{default} in the next round.",
+    "balance.boost.applying": "{0} {gold}Applying boost{default} to {red}{1}{default} team (lost {lightred}{2}{default} rounds) - {green}{3}%{default} skill advantage.",
+    "balance.size.moved": "{0} Moved {green}{1}{default} player{2} to maintain team size balance.",
+    "balance.size.moved.reason": "{0} Moved {green}{1}{default} player{2} to balance team sizes ({orange}T:{3} vs CT:{4}{default}).",
+    "balance.skill.swapped": "{0} Swapped {green}{1}{default} player pair{2} to balance team skill levels.",
+    "balance.skill.swapped.reason": "{0} Swapped {green}{1}{default} player pair{2} to balance {orange}{3}{default} skills (difference: {lightred}{4}{default}).",
+    "balance.force": "{0} {red}Critical team imbalance detected{default}. Forced {green}{1}{default} players to switch teams.",
+    
+    "scramble.random": "{0} Teams have been {gold}randomly scrambled{default} for better balance!",
+    "scramble.skill": "{0} Teams have been {gold}scrambled based on skill{default} for better balance!",
+    
+    "player.moved.t": "{0} You have been moved to the {orange}Terrorist{default} team to maintain balance.",
+    "player.moved.ct": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to maintain balance.",
+    "player.moved.t.reason": "{0} You have been moved to the {orange}Terrorist{default} team to {green}{1}{default}.",
+    "player.moved.ct.reason": "{0} You have been moved to the {blue}Counter-Terrorist{default} team to {green}{1}{default}.",
+    
+    "stats.header": "{0} {gold}=== Your Statistics ==={default}",
+    "stats.kd": "{0} K/D Ratio: {green}{1}{default}",
+    "stats.kda": "{0} KDA: {green}{1}{default}",
+    "stats.score": "{0} Score: {green}{1}{default}",
+    "stats.winrate": "{0} Win Rate: {green}{1}%{default}",
+    "stats.rounds": "{0} Rounds Played: {green}{1}{default}",
+    "stats.switches": "{0} Times Switched: {green}{1}{default}",
+    
+    "preview.header": "{0} {gold}=== Balance Preview ==={default}",
+    "preview.current": "{0} Current: T={orange}{1}{default} (avg: {2}) vs CT={blue}{3}{default} (avg: {4})",
+    "preview.proposed": "{0} After balance: T={orange}{1}{default} vs CT={blue}{2}{default}",
+    "preview.moves": "{0} Would move {green}{1}{default} player(s), swap {green}{2}{default} pair(s)."
+}
